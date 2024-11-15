@@ -43,7 +43,16 @@ public class Controller implements Observer {
 
 	@Override
 	public void update(Observable obervable, Object levelName) {
-		goToLevel((String) levelName);
+		//goToLevel((String) levelName);
+		try {
+			if (levelName instanceof String) {
+				goToLevel((String) levelName);
+			} else {
+				System.out.println("Invalid level update received: " + levelName);
+			}
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error transitioning to level: " + e.getMessage());
+		}
 	}
 
 }
