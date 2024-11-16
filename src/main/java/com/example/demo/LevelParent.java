@@ -177,9 +177,18 @@ public abstract class LevelParent extends Observable {
 				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
 					actor.takeDamage();
 					otherActor.takeDamage();
+
+					//added debugging to check collisions
+					if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
+						System.out.println("Collision detected between: " + actor + " and " + otherActor);
+						actor.takeDamage();
+						otherActor.takeDamage();
+					}
+
 				}
 			}
 		}
+
 	}
 
 	private void handleEnemyPenetration() {

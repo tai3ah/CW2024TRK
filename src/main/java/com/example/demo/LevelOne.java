@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import javafx.scene.control.Label;
+
 public class LevelOne extends LevelParent {
 	
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
@@ -11,17 +13,31 @@ public class LevelOne extends LevelParent {
 	private static final double ENEMY_SPAWN_PROBABILITY = .20;
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 
+
+
 	public LevelOne(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
+
 	}
+
+
+
 
 	@Override
 	protected void checkIfGameOver() {
 		if (userIsDestroyed()) {
 			loseGame();
 		}
-		else if (userHasReachedKillTarget())
+		else if (userHasReachedKillTarget()) {
 			goToNextLevel(NEXT_LEVEL);
+		}
+		updateKillCountLabel();
+	}
+
+	private void updateKillCountLabel(){
+		int kills = getUser().getNumberOfKills();
+		System.out.println("Current Kill Count: " + kills); // Print to console
+
 	}
 
 	@Override
