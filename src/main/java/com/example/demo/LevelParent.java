@@ -32,7 +32,7 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyProjectiles;
 	
 	private int currentNumberOfEnemies;
-	private LevelView levelView;
+	private final LevelView levelView;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -164,11 +164,27 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void handleUserProjectileCollisions() {
-		handleCollisions(userProjectiles, enemyUnits);
+		//handleCollisions(userProjectiles, enemyUnits);
+		//added here
+		for (ActiveActorDestructible projectile : userProjectiles) {
+			for (ActiveActorDestructible enemy : enemyUnits) {
+				if (!enemy.isDestroyed() && projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+					enemy.takeDamage();
+					projectile.takeDamage();
+
+					if (enemy.isDestroyed()) {
+						user.incrementKillCount(); // Increment kill count when enemy is destroyed
+						System.out.println("Kill count: " + user.getNumberOfKills());
+					}
+				}
+			}
+		}
 	}
 
 	private void handleEnemyProjectileCollisions() {
 		handleCollisions(enemyProjectiles, friendlyUnits);
+		//added here
+
 	}
 
 	private void handleCollisions(List<ActiveActorDestructible> actors1,
@@ -179,13 +195,6 @@ public abstract class LevelParent extends Observable {
 					actor.takeDamage();
 					otherActor.takeDamage();
 
-					//added debugging to check collisions
-					if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-						System.out.println("Collision detected between: " + actor + " and " + otherActor);
-						actor.takeDamage();
-						otherActor.takeDamage();
-					}
-
 				}
 			}
 		}
@@ -195,7 +204,7 @@ public abstract class LevelParent extends Observable {
 	private void handleEnemyPenetration() {
 		for (ActiveActorDestructible enemy : enemyUnits) {
 			if (enemyHasPenetratedDefenses(enemy)) {
-				user.takeDamage();
+				enemy.takeDamage();
 				enemy.destroy();
 			}
 		}
@@ -206,9 +215,10 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateKillCount() {
-		for (int i = 0; i < currentNumberOfEnemies - enemyUnits.size(); i++) {
-			user.incrementKillCount();
-		}
+		//for (int i = 0; i < currentNumberOfEnemies - enemyUnits.size(); i++) {
+		//	user.incrementKillCount();
+		//}
+		levelView.updateKillCount(user.getNumberOfKills());
 	}
 
 	private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
@@ -257,5 +267,18 @@ public abstract class LevelParent extends Observable {
 	private void updateNumberOfEnemies() {
 		currentNumberOfEnemies = enemyUnits.size();
 	}
+
+	// Method to add a shield for the enemy in Level Two
+	/*protected void addShieldToEnemy(ActiveActorDestructible enemy) {
+		ShieldImage shield = new ShieldImage(enemy.getLayoutX(), enemy.getLayoutY());
+		shield.setVisible(true);
+		root.getChildren().add(shield);
+
+		// Logic to bind the shield's position to the enemy so that it moves with the enemy
+		shield.layoutXProperty().bind(enemy.layoutXProperty());
+		shield.layoutYProperty().bind(enemy.layoutYProperty());
+
+		System.out.println("Shield added to enemy at position: (" + enemy.getLayoutX() + ", " + enemy.getLayoutY() + ")");
+	}*/
 
 }
