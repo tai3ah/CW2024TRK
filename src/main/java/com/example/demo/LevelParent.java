@@ -21,6 +21,7 @@ public abstract class LevelParent extends Observable {
 	private final double enemyMaximumYPosition;
 
 	private final Group root;
+
 	private final Timeline timeline;
 	private final UserPlane user;
 	private final Scene scene;
@@ -183,7 +184,7 @@ public abstract class LevelParent extends Observable {
 
 	private void handleEnemyProjectileCollisions() {
 		handleCollisions(enemyProjectiles, friendlyUnits);
-		//added here
+
 
 	}
 
@@ -239,7 +240,8 @@ public abstract class LevelParent extends Observable {
 		return user;
 	}
 
-	protected Group getRoot() {
+	//changed from protected to public
+	public Group getRoot() {
 		return root;
 	}
 
@@ -268,17 +270,17 @@ public abstract class LevelParent extends Observable {
 		currentNumberOfEnemies = enemyUnits.size();
 	}
 
-	// Method to add a shield for the enemy in Level Two
-	/*protected void addShieldToEnemy(ActiveActorDestructible enemy) {
-		ShieldImage shield = new ShieldImage(enemy.getLayoutX(), enemy.getLayoutY());
-		shield.setVisible(true);
-		root.getChildren().add(shield);
+	public Timeline getTimeline() {
+		return timeline;
+	}
 
-		// Logic to bind the shield's position to the enemy so that it moves with the enemy
-		shield.layoutXProperty().bind(enemy.layoutXProperty());
-		shield.layoutYProperty().bind(enemy.layoutYProperty());
 
-		System.out.println("Shield added to enemy at position: (" + enemy.getLayoutX() + ", " + enemy.getLayoutY() + ")");
-	}*/
+	public void stopGame() {
+		if (timeline != null) {
+			timeline.stop();
+		}
+	}
+
+
 
 }
