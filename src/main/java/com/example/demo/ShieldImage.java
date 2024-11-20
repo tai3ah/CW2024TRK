@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class ShieldImage extends ImageView {
-	
+
 	//private static final String IMAGE_NAME = "/images/shield.png";
 
 
@@ -12,7 +12,7 @@ public class ShieldImage extends ImageView {
 	private boolean shieldStatus = false;
 
 	private static final int SHIELD_SIZE = 200;
-	
+
 	public ShieldImage(double xPosition, double yPosition) {
 		this.setLayoutX(xPosition);
 		this.setLayoutY(yPosition);
@@ -25,7 +25,7 @@ public class ShieldImage extends ImageView {
 	}
 
 	public void showShield() {
-	//added
+		//added
 		if (!shieldStatus){
 			shieldStatus=true;
 			this.setVisible(true);
@@ -33,7 +33,7 @@ public class ShieldImage extends ImageView {
 		}
 		//this.setVisible(true);
 	}
-	
+
 	public void hideShield() {
 		this.setVisible(false);
 		System.out.println("shield is not here");

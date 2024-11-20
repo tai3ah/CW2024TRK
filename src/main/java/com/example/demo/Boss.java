@@ -68,7 +68,7 @@ public class Boss extends FighterPlane {
 			System.out.println("Shield Position Updated(BOSS class): " + getLayoutX() + ", " + getLayoutY());
 		}
 	}
-	
+
 	@Override
 	public void updateActor() {
 		updatePosition();
@@ -79,7 +79,7 @@ public class Boss extends FighterPlane {
 	public ActiveActorDestructible fireProjectile() {
 		return bossFiresInCurrentFrame() ? new BossProjectile(getProjectileInitialPosition()) : null;
 	}
-	
+
 	@Override
 	public void takeDamage() {
 		if (!isShielded) {
@@ -98,7 +98,7 @@ public class Boss extends FighterPlane {
 
 	private void updateShield() {
 		if (isShielded) framesWithShieldActivated++;
-		else if (shieldShouldBeActivated()) activateShield();	
+		else if (shieldShouldBeActivated()) activateShield();
 		if (shieldExhausted()) deactivateShield();
 	}
 
