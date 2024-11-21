@@ -1,27 +1,35 @@
 package com.example.demo.controller;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
+import com.example.demo.MainMenuPage;
 
 public class Main extends Application {
 
 	private static final int SCREEN_WIDTH = 1300;
 	private static final int SCREEN_HEIGHT = 750;
 	private static final String TITLE = "Sky Battle";
-	private Controller myController;
+	//private Controller myController;
 
 	@Override
-	public void start(Stage stage) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	//removed unused exception throws
+	public void start(Stage stage) throws  SecurityException, IllegalArgumentException {
 		stage.setTitle(TITLE);
+		//was false making true to test
 		stage.setResizable(false);
 		stage.setHeight(SCREEN_HEIGHT);
 		stage.setWidth(SCREEN_WIDTH);
-		myController = new Controller(stage);
-		myController.launchGame();
+
+		// Launch the main menu page
+		MainMenuPage mainMenuPage = new MainMenuPage();
+		mainMenuPage.start(stage);
+
+
+		//myController = new Controller(stage);
+		//myController.launchGame();
+
 	}
+
 
 	public static void main(String[] args) {
 		launch();
