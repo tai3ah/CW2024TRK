@@ -1,7 +1,7 @@
 package com.example.demo;
 
-import javafx.scene.Group;
 import javafx.scene.text.Text;
+import javafx.scene.layout.Pane;
 
 public class LevelView {
 	
@@ -9,22 +9,22 @@ public class LevelView {
 	private static final double HEART_DISPLAY_Y_POSITION = 25;
 	private static final int WIN_IMAGE_X_POSITION = 355;
 	private static final int WIN_IMAGE_Y_POSITION = 175;
-	private static final int LOSS_SCREEN_X_POSITION = -160;
-	private static final int LOSS_SCREEN_Y_POSISITION = -375;
+	//private static final int LOSS_SCREEN_X_POSITION = -160;
+	//private static final int LOSS_SCREEN_Y_POSITION = -375;
 
 	private static final double KILL_COUNT_X_POSITION = 10;
 	private static final double KILL_COUNT_Y_POSITION = 60;
-	private final Group root;
+	private final Pane root;
 	private final WinImage winImage;
 	private final GameOverImage gameOverImage;
 	private final HeartDisplay heartDisplay;
 	private final Text killCountText; // Kill count display
 	
-	public LevelView(Group root, int heartsToDisplay) {
+	public LevelView(Pane root, int heartsToDisplay) {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_DISPLAY_X_POSITION, HEART_DISPLAY_Y_POSITION, heartsToDisplay);
 		this.winImage = new WinImage(WIN_IMAGE_X_POSITION, WIN_IMAGE_Y_POSITION);
-		//this.gameOverImage = new GameOverImage(LOSS_SCREEN_X_POSITION, LOSS_SCREEN_Y_POSISITION);
+		//this.gameOverImage = new GameOverImage(LOSS_SCREEN_X_POSITION, LOSS_SCREEN_Y_POSITION);
 		this.gameOverImage = new GameOverImage();
 
 		// Initialize kill count display

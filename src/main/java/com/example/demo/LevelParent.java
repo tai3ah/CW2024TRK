@@ -5,12 +5,14 @@ import java.util.stream.Collectors;
 
 import javafx.animation.*;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
+//import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.util.Duration;
 
+//added now
+import javafx.scene.layout.Pane;
 
 public abstract class LevelParent extends Observable {
 
@@ -20,7 +22,7 @@ public abstract class LevelParent extends Observable {
 	private final double screenWidth;
 	private final double enemyMaximumYPosition;
 
-	private final Group root;
+	private final Pane root;
 
 	private final Timeline timeline;
 	private final UserPlane user;
@@ -36,7 +38,7 @@ public abstract class LevelParent extends Observable {
 	private final LevelView levelView;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
-		this.root = new Group();
+		this.root = new Pane();
 		this.scene = new Scene(root, screenWidth, screenHeight);
 		this.timeline = new Timeline();
 		this.user = new UserPlane(playerInitialHealth);
@@ -241,7 +243,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	//changed from protected to public
-	public Group getRoot() {
+	public Pane getRoot() {
 		return root;
 	}
 
