@@ -1,11 +1,11 @@
 package com.example.demo.controller;
 
-//import java.lang.reflect.Constructor;
-//import java.lang.reflect.InvocationTargetException;
+
 import java.util.Observable;
 import java.util.Observer;
 
 import javafx.scene.Scene;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
@@ -15,21 +15,29 @@ import com.example.demo.builder.LevelBuilder;
 
 public class Controller implements Observer {
 
-	//added
+
+
 	private LevelParent currentLevel;
 
 	private static final String LEVEL_ONE_CLASS_NAME = "LevelOne";
+
+
 	private final Stage stage;
 
 	public Controller(Stage stage) {
 		this.stage = stage;
+
 	}
 
 	public void launchGame()   {
 
-			stage.show();
-			goToLevel(LEVEL_ONE_CLASS_NAME);
+
+		stage.show();
+		goToLevel(LEVEL_ONE_CLASS_NAME);
+
 	}
+
+
 
 	/*private void goToLevel(String levelName)  {
 			try{
@@ -56,7 +64,8 @@ public class Controller implements Observer {
 			cleanupCurrentLevel();
 
 			// Create the new level using LevelBuilder
-			LevelParent myLevel = LevelBuilder.createLevel(levelName, stage.getHeight(), stage.getWidth());
+			//LevelParent myLevel = LevelBuilder.createLevel(levelName, stage.getHeight(), stage.getWidth());
+			LevelParent myLevel = LevelBuilder.createLevel(levelName, stage.getHeight(), stage.getWidth(), stage);
 			myLevel.addObserver(this);
 			Scene scene = myLevel.initializeScene();
 			stage.setScene(scene);
@@ -85,7 +94,7 @@ public class Controller implements Observer {
 
 
 	@Override
-	public void update(Observable obervable, Object levelName) {
+	public void update(Observable observable, Object levelName) {
 		//goToLevel((String) levelName);
 		try {
 			if (levelName instanceof String) {

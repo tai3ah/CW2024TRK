@@ -5,14 +5,20 @@ import java.util.stream.Collectors;
 
 import javafx.animation.*;
 import javafx.event.EventHandler;
-//import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.util.Duration;
-
-//added now
 import javafx.scene.layout.Pane;
+
+import javafx.stage.Stage;
+
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
+import javafx.geometry.Pos;
+
 
 public abstract class LevelParent extends Observable {
 
@@ -37,7 +43,12 @@ public abstract class LevelParent extends Observable {
 	private int currentNumberOfEnemies;
 	private final LevelView levelView;
 
-	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
+	private final Stage primaryStage;
+
+
+	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage primaryStage) {
+
+		this.primaryStage = primaryStage;
 		this.root = new Pane();
 		this.scene = new Scene(root, screenWidth, screenHeight);
 		this.timeline = new Timeline();
@@ -122,7 +133,95 @@ public abstract class LevelParent extends Observable {
 			}
 		});
 		root.getChildren().add(background);
+
+		// Add Pause Button to the root
+		Button pauseButton = new Button("Pause");
+		pauseButton.setLayoutX(screenWidth - 100); // Adjust to your preferred position
+		pauseButton.setLayoutY(20);
+		pauseButton.setOnAction(event -> showPauseWindow());
+		root.getChildren().add(pauseButton);
 	}
+
+
+//added this method
+	private void showPauseWindow() {
+		// Pause the game
+		timeline.pause();
+
+		// Create a pause overlay
+		StackPane pauseOverlay = new StackPane();
+		pauseOverlay.setPrefSize(screenWidth, screenHeight);
+		pauseOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);"); // Semi-transparent black overlay
+
+		// Pause message
+		Label pauseLabel = new Label("GAME PAUSED");
+		pauseLabel.setStyle("-fx-font-size: 30px; -fx-text-fill: white;");
+
+		// Continue and Quit buttons
+		Button continueButton = new Button("CONTINUE");
+		continueButton.setOnAction(event -> {
+			root.getChildren().remove(pauseOverlay);
+			resumeGameWithCountdown();
+		});
+
+		Button quitButton = new Button("QUIT LEVEL");
+		//quitButton.setOnAction(event -> goToMainMenu());
+		quitButton.setOnAction(event -> goToMainMenu(primaryStage));
+
+		//quitButton.setOnAction(event -> goToMainMenu((Stage) root.getScene().getWindow()));
+
+		VBox buttonsLayout = new VBox(20, pauseLabel, continueButton, quitButton);
+		buttonsLayout.setAlignment(Pos.CENTER);
+
+		pauseOverlay.getChildren().add(buttonsLayout);
+		root.getChildren().add(pauseOverlay);
+	}
+
+//added this method
+	private void resumeGameWithCountdown() {
+		Label countdownLabel = new Label("3");
+		countdownLabel.setStyle("-fx-font-size: 50px; -fx-text-fill: white;");
+		countdownLabel.setLayoutX(screenWidth / 2 - 25);
+		countdownLabel.setLayoutY(screenHeight / 2 - 25);
+		root.getChildren().add(countdownLabel);
+
+		Timeline countdownTimeline = new Timeline(
+				new KeyFrame(Duration.seconds(1), e -> countdownLabel.setText("2")),
+				new KeyFrame(Duration.seconds(2), e -> countdownLabel.setText("1")),
+				new KeyFrame(Duration.seconds(3), e -> {
+					root.getChildren().remove(countdownLabel);
+					timeline.play(); // Resume the game
+				})
+		);
+		countdownTimeline.setCycleCount(1);
+		countdownTimeline.play();
+	}
+
+//added this method
+
+	private void goToMainMenu(Stage primaryStage) {
+		stopGame(); // Stop the timeline and game logic
+
+		// Create a new Main Menu Page and set it on the primaryStage
+		MainMenuPage mainMenuPage = new MainMenuPage();
+
+		// Reset the scene for main menu
+		StackPane root = new StackPane();
+		Scene mainMenuScene = new Scene(root, 1300, 750); // Set your preferred width and height
+		primaryStage.setScene(mainMenuScene);
+
+		// Set up the main menu layout and content
+		mainMenuPage.start(primaryStage);
+		primaryStage.sizeToScene();
+		primaryStage.show();
+
+	}
+
+
+
+
+
+
 
 	private void fireProjectile() {
 		ActiveActorDestructible projectile = user.fireProjectile();
@@ -166,21 +265,6 @@ public abstract class LevelParent extends Observable {
 		handleCollisions(friendlyUnits, enemyUnits);
 	}
 
-	/*private void handleUserProjectileCollisions() {
-		for (ActiveActorDestructible projectile : userProjectiles) {
-			for (ActiveActorDestructible enemy : enemyUnits) {
-				if (!enemy.isDestroyed() && projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
-					enemy.takeDamage();
-					projectile.takeDamage();
-
-					if (enemy.isDestroyed()) {
-						user.incrementKillCount(); // Increment kill count when enemy is destroyed
-						System.out.println("Kill count: " + user.getNumberOfKills());
-					}
-				}
-			}
-		}
-	} */
 
 	private void handleUserProjectileCollisions() {
 		for (ActiveActorDestructible projectile : userProjectiles) {
@@ -196,9 +280,13 @@ public abstract class LevelParent extends Observable {
 						}
 					} else {
 						enemy.takeDamage();
+						if (enemy.isDestroyed()) {
+							user.incrementKillCount(); // Increment kill count when enemy is destroyed
+							System.out.println("Kill count: " + user.getNumberOfKills());
+						}
 					}
 					projectile.takeDamage();
-					root.getChildren().remove(projectile);  // Remove the projectile once it hits
+					root.getChildren().remove(projectile);
 				}
 			}
 		}

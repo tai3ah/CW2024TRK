@@ -12,10 +12,11 @@ import javafx.scene.Cursor;
 
 public class MainMenuPage {
 
-    //private static final String BACKGROUND_IMAGE_PATH = "/com/example/demo/images/mainMenuBG.png";
+
+    private static final String BACKGROUND_IMAGE = "/com/example/demo/images/mainMenuBG.png";
     private static final String PLAY_BUTTON_IMAGE_PATH = "/com/example/demo/images/play.png";
     private static final String QUIT_BUTTON_IMAGE_PATH = "/com/example/demo/images/quit.png";
-    private static final String BACKGROUND_IMAGE = "/com/example/demo/images/mainMenuBG.png";
+
 
     public void start(Stage primaryStage) {
         // Load the background image

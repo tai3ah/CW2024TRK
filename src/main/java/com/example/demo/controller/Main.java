@@ -25,9 +25,6 @@ public class Main extends Application {
 		mainMenuPage.start(stage);
 
 
-		//myController = new Controller(stage);
-		//myController.launchGame();
-
 	}
 
 
