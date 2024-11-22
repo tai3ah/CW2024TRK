@@ -1,6 +1,5 @@
 package com.example.demo;
 
-//import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 
 public class LevelViewLevelTwo extends LevelView {

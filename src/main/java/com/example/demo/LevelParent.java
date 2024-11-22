@@ -166,9 +166,7 @@ public abstract class LevelParent extends Observable {
 		handleCollisions(friendlyUnits, enemyUnits);
 	}
 
-	private void handleUserProjectileCollisions() {
-		//handleCollisions(userProjectiles, enemyUnits);
-		//added here
+	/*private void handleUserProjectileCollisions() {
 		for (ActiveActorDestructible projectile : userProjectiles) {
 			for (ActiveActorDestructible enemy : enemyUnits) {
 				if (!enemy.isDestroyed() && projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
@@ -182,7 +180,30 @@ public abstract class LevelParent extends Observable {
 				}
 			}
 		}
+	} */
+
+	private void handleUserProjectileCollisions() {
+		for (ActiveActorDestructible projectile : userProjectiles) {
+			for (ActiveActorDestructible enemy : enemyUnits) {
+				if (!enemy.isDestroyed() && projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+					if (enemy instanceof Boss) {
+						Boss boss = (Boss) enemy;
+						if (!boss.isShielded()) {
+							boss.takeDamage();
+							System.out.println("Boss hit! Health remaining: " + boss.getHealth());
+						} else {
+							System.out.println("Projectile hit the shield. Boss is protected.");
+						}
+					} else {
+						enemy.takeDamage();
+					}
+					projectile.takeDamage();
+					root.getChildren().remove(projectile);  // Remove the projectile once it hits
+				}
+			}
+		}
 	}
+
 
 	private void handleEnemyProjectileCollisions() {
 		handleCollisions(enemyProjectiles, friendlyUnits);
@@ -218,9 +239,6 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateKillCount() {
-		//for (int i = 0; i < currentNumberOfEnemies - enemyUnits.size(); i++) {
-		//	user.incrementKillCount();
-		//}
 		levelView.updateKillCount(user.getNumberOfKills());
 	}
 

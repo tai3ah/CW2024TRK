@@ -4,13 +4,17 @@ import java.util.*;
 
 public class Boss extends FighterPlane {
 
+	protected double getProjectileInitialPosition() {
+		return getLayoutY() + getTranslateY() + PROJECTILE_Y_POSITION_OFFSET;
+	}
+
 	private static final String IMAGE_NAME = "bossplane.png";
 	private static final double INITIAL_X_POSITION = 1000.0;
 	private static final double INITIAL_Y_POSITION = 400;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
-	private static final double BOSS_FIRE_RATE = .04;
-	private static final double BOSS_SHIELD_PROBABILITY = .02; //.002;
-	private static final int IMAGE_HEIGHT = 300;
+	private static final double BOSS_FIRE_RATE = 0.04;
+	private static final double BOSS_SHIELD_PROBABILITY = 0.00002;
+	private static final int IMAGE_HEIGHT = 75;
 	private static final int VERTICAL_VELOCITY = 8;
 	private static final int HEALTH = 10;
 	private static final int MOVE_FREQUENCY_PER_CYCLE = 5;
@@ -19,14 +23,13 @@ public class Boss extends FighterPlane {
 	private static final int Y_POSITION_UPPER_BOUND = -100;
 	private static final int Y_POSITION_LOWER_BOUND = 475;
 	private static final int MAX_FRAMES_WITH_SHIELD = 500;
+
 	private final List<Integer> movePattern;
 	private boolean isShielded;
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
 	private int framesWithShieldActivated;
-	//added
 	private ShieldImage shieldImage;
-
 
 	public Boss() {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
@@ -35,37 +38,26 @@ public class Boss extends FighterPlane {
 		indexOfCurrentMove = 0;
 		framesWithShieldActivated = 0;
 		isShielded = false;
-		//initializeMovePattern();
 
-		//added
-		shieldImage = new ShieldImage(INITIAL_X_POSITION,INITIAL_Y_POSITION);
-		getShieldImage();
+		shieldImage = new ShieldImage(INITIAL_X_POSITION, INITIAL_Y_POSITION);
 		initializeMovePattern();
 	}
 
-	//added
 	public ShieldImage getShieldImage() {
 		return shieldImage;
 	}
 
 	@Override
 	public void updatePosition() {
-		/*double initialTranslateY = getTranslateY();
-		moveVertically(getNextMove());
-		double currentPosition = getLayoutY() + getTranslateY();
-		if (currentPosition < Y_POSITION_UPPER_BOUND || currentPosition > Y_POSITION_LOWER_BOUND) {
-			setTranslateY(initialTranslateY);
-		}*/
-		//added
 		double initialTranslateY = getTranslateY();
 		moveVertically(getNextMove());
 		double currentPosition = getLayoutY() + getTranslateY();
+
 		if (currentPosition < Y_POSITION_UPPER_BOUND || currentPosition > Y_POSITION_LOWER_BOUND) {
 			setTranslateY(initialTranslateY);
-		}
-		if (isShielded) {
-			shieldImage.updatePosition(getLayoutX(), getLayoutY()); // Update shield position
-			System.out.println("Shield Position Updated(BOSS class): " + getLayoutX() + ", " + getLayoutY());
+		} else {
+			// Update the shield's position based on the boss's position
+			shieldImage.updatePosition(getTranslateX(), getTranslateY());
 		}
 	}
 
@@ -84,6 +76,7 @@ public class Boss extends FighterPlane {
 	public void takeDamage() {
 		if (!isShielded) {
 			super.takeDamage();
+			System.out.println("Boss Health: " + getHealth());
 		}
 	}
 
@@ -97,9 +90,14 @@ public class Boss extends FighterPlane {
 	}
 
 	private void updateShield() {
-		if (isShielded) framesWithShieldActivated++;
-		else if (shieldShouldBeActivated()) activateShield();
-		if (shieldExhausted()) deactivateShield();
+		if (isShielded) {
+			framesWithShieldActivated++;
+		} else if (shieldShouldBeActivated()) {
+			activateShield();
+		}
+		if (shieldExhausted()) {
+			deactivateShield();
+		}
 	}
 
 	private int getNextMove() {
@@ -120,10 +118,6 @@ public class Boss extends FighterPlane {
 		return Math.random() < BOSS_FIRE_RATE;
 	}
 
-	private double getProjectileInitialPosition() {
-		return getLayoutY() + getTranslateY() + PROJECTILE_Y_POSITION_OFFSET;
-	}
-
 	private boolean shieldShouldBeActivated() {
 		return Math.random() < BOSS_SHIELD_PROBABILITY;
 	}
@@ -134,15 +128,16 @@ public class Boss extends FighterPlane {
 
 	private void activateShield() {
 		isShielded = true;
-		//added
 		shieldImage.showShield();
 	}
 
 	private void deactivateShield() {
 		isShielded = false;
 		framesWithShieldActivated = 0;
-		//added
 		shieldImage.hideShield();
 	}
 
+	public boolean isShielded() {
+		return isShielded;
+	}
 }
