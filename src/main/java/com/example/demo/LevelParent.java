@@ -8,6 +8,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.scene.layout.Pane;
 
@@ -45,6 +47,9 @@ public abstract class LevelParent extends Observable {
 
 	private final Stage primaryStage;
 
+	private static final String PAUSE_BUTTON = "/com/example/demo/images/pause.png";
+	private static final String RESUME_BUTTON = "/com/example/demo/images/resume.png";
+	private static final String QUIT_LEVEL_BUTTON= "/com/example/demo/images/quitLevel.png";
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage primaryStage) {
 
@@ -135,42 +140,66 @@ public abstract class LevelParent extends Observable {
 		root.getChildren().add(background);
 
 		// Add Pause Button to the root
-		Button pauseButton = new Button("Pause");
-		pauseButton.setLayoutX(screenWidth - 100); // Adjust to your preferred position
+		Image pauseImage = new Image(getClass().getResourceAsStream(PAUSE_BUTTON)); // Load the pause image from the specified path
+		ImageView pauseImageView = new ImageView(pauseImage);
+		pauseImageView.setFitWidth(80);
+		pauseImageView.setFitHeight(60);
+
+		Button pauseButton = new Button();
+		pauseButton.setGraphic(pauseImageView);
+		pauseButton.setLayoutX(screenWidth - 100);
 		pauseButton.setLayoutY(20);
-		pauseButton.setOnAction(event -> showPauseWindow());
+		pauseButton.setStyle("-fx-background-color: transparent;");
+		pauseButton.setOnAction(event -> {
+			showPauseWindow(pauseButton);
+
+		});
 		root.getChildren().add(pauseButton);
 	}
 
 
 //added this method
-	private void showPauseWindow() {
+	private void showPauseWindow(Button pauseButton) {
 		// Pause the game
 		timeline.pause();
+
 
 		// Create a pause overlay
 		StackPane pauseOverlay = new StackPane();
 		pauseOverlay.setPrefSize(screenWidth, screenHeight);
-		pauseOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);"); // Semi-transparent black overlay
+		pauseOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+
 
 		// Pause message
 		Label pauseLabel = new Label("GAME PAUSED");
-		pauseLabel.setStyle("-fx-font-size: 30px; -fx-text-fill: white;");
+		pauseLabel.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 30px; -fx-text-fill: #FFD700;");
 
-		// Continue and Quit buttons
-		Button continueButton = new Button("CONTINUE");
-		continueButton.setOnAction(event -> {
+		// resume game and Quit level buttons
+		Image resumeImage = new Image(getClass().getResourceAsStream(RESUME_BUTTON));
+		ImageView resumeImageView = new ImageView(resumeImage);
+		resumeImageView.setFitWidth(100);
+		resumeImageView.setFitHeight(60);
+
+		Button resumeButton = new Button();
+		resumeButton.setGraphic(resumeImageView);
+		resumeButton.setStyle("-fx-background-color: transparent;");
+		resumeButton.setOnAction(event ->  {
 			root.getChildren().remove(pauseOverlay);
-			resumeGameWithCountdown();
+			pauseButton.setDisable(true);
+			resumeGameWithCountdown(pauseButton);
 		});
 
-		Button quitButton = new Button("QUIT LEVEL");
-		//quitButton.setOnAction(event -> goToMainMenu());
-		quitButton.setOnAction(event -> goToMainMenu(primaryStage));
+		Image quitLevelImage = new Image(getClass().getResourceAsStream(QUIT_LEVEL_BUTTON));
+		ImageView quitLevelImageView = new ImageView(quitLevelImage);
+		quitLevelImageView.setFitWidth(100);
+		quitLevelImageView.setFitHeight(60);
 
-		//quitButton.setOnAction(event -> goToMainMenu((Stage) root.getScene().getWindow()));
+		Button quitLevelButton = new Button();
+		quitLevelButton.setGraphic(quitLevelImageView);
+		quitLevelButton.setStyle("-fx-background-color: transparent;");
+		quitLevelButton.setOnAction(event -> goToMainMenu(primaryStage));
 
-		VBox buttonsLayout = new VBox(20, pauseLabel, continueButton, quitButton);
+		VBox buttonsLayout = new VBox(20, pauseLabel, resumeButton, quitLevelButton);
 		buttonsLayout.setAlignment(Pos.CENTER);
 
 		pauseOverlay.getChildren().add(buttonsLayout);
@@ -178,7 +207,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 //added this method
-	private void resumeGameWithCountdown() {
+	private void resumeGameWithCountdown(Button pauseButton) {
 		Label countdownLabel = new Label("3");
 		countdownLabel.setStyle("-fx-font-size: 50px; -fx-text-fill: white;");
 		countdownLabel.setLayoutX(screenWidth / 2 - 25);
@@ -190,6 +219,7 @@ public abstract class LevelParent extends Observable {
 				new KeyFrame(Duration.seconds(2), e -> countdownLabel.setText("1")),
 				new KeyFrame(Duration.seconds(3), e -> {
 					root.getChildren().remove(countdownLabel);
+					pauseButton.setDisable(false);
 					timeline.play(); // Resume the game
 				})
 		);
@@ -216,10 +246,6 @@ public abstract class LevelParent extends Observable {
 		primaryStage.show();
 
 	}
-
-
-
-
 
 
 
