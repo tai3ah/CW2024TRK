@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 
 public class ShieldImage extends ImageView {
 
-	private static final int SHIELD_SIZE = 200;
+	private static final int SHIELD_SIZE = 400;
 
 	public ShieldImage(double xPosition, double yPosition) {
 		this.setLayoutX(xPosition);
@@ -13,7 +13,7 @@ public class ShieldImage extends ImageView {
 		this.setImage(new Image(getClass().getResource("/com/example/demo/images/shield.png").toExternalForm()));
 		this.setFitHeight(SHIELD_SIZE);
 		this.setFitWidth(SHIELD_SIZE);
-		this.setVisible(false); // By default, the shield is not visible
+		this.setVisible(false);
 	}
 
 	public void showShield() {
@@ -29,6 +29,5 @@ public class ShieldImage extends ImageView {
 	public void updatePosition(double xPosition, double yPosition) {
 		setTranslateX(xPosition);
 		setTranslateY(yPosition);
-		//System.out.println("Shield Position Updated (ShieldImage class): " + getTranslateX() + ", " + getTranslateY());
 	}
 }
