@@ -17,6 +17,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+
+
 public abstract class LevelParent {
 
 	private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
@@ -44,6 +46,7 @@ public abstract class LevelParent {
 	private final List<Consumer<String>> levelChangeListeners = new ArrayList<>();
 
 	private final PauseManager pauseManager;
+	private final CollisionManager collisionManager;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -66,6 +69,7 @@ public abstract class LevelParent {
 		friendlyUnits.add(user);
 
 		this.pauseManager = new PauseManager(root, primaryStage, timeline, screenWidth, screenHeight);
+		this.collisionManager = new CollisionManager(root, user, enemyUnits, friendlyUnits, userProjectiles, enemyProjectiles);
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -101,10 +105,7 @@ public abstract class LevelParent {
 		updateActors();
 		generateEnemyFire();
 		updateNumberOfEnemies();
-		handleEnemyPenetration();
-		handleUserProjectileCollisions();
-		handleEnemyProjectileCollisions();
-		handlePlaneCollisions();
+		collisionManager.handleCollisions();
 		removeAllDestroyedActors();
 		updateKillCount();
 		updateLevelView();
@@ -178,70 +179,12 @@ public abstract class LevelParent {
 		actors.removeAll(destroyedActors);
 	}
 
-	private void handlePlaneCollisions() {
-		handleCollisions(friendlyUnits, enemyUnits);
-	}
-
-	private void handleUserProjectileCollisions() {
-		for (ActiveActorDestructible projectile : userProjectiles) {
-			for (ActiveActorDestructible enemy : enemyUnits) {
-				if (!enemy.isDestroyed() && projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
-					if (enemy instanceof Boss) {
-						Boss boss = (Boss) enemy;
-						if (!boss.isShielded()) {
-							boss.takeDamage();
-							System.out.println("Boss hit! Health remaining: " + boss.getHealth());
-						} else {
-							System.out.println("Projectile hit the shield. Boss is protected.");
-						}
-					} else {
-						enemy.takeDamage();
-						if (enemy.isDestroyed()) {
-							user.incrementKillCount(); // Increment kill count when enemy is destroyed
-							System.out.println("Kill count: " + user.getNumberOfKills());
-						}
-					}
-					projectile.takeDamage();
-					root.getChildren().remove(projectile);
-				}
-			}
-		}
-	}
-
-	private void handleEnemyProjectileCollisions() {
-		handleCollisions(enemyProjectiles, friendlyUnits);
-	}
-
-	private void handleCollisions(List<ActiveActorDestructible> actors1, List<ActiveActorDestructible> actors2) {
-		for (ActiveActorDestructible actor : actors2) {
-			for (ActiveActorDestructible otherActor : actors1) {
-				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-					actor.takeDamage();
-					otherActor.takeDamage();
-				}
-			}
-		}
-	}
-
-	private void handleEnemyPenetration() {
-		for (ActiveActorDestructible enemy : enemyUnits) {
-			if (enemyHasPenetratedDefenses(enemy)) {
-				enemy.takeDamage();
-				enemy.destroy();
-			}
-		}
-	}
-
 	private void updateLevelView() {
 		levelView.removeHearts(user.getHealth());
 	}
 
 	private void updateKillCount() {
 		levelView.updateKillCount(user.getNumberOfKills());
-	}
-
-	private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
-		return Math.abs(enemy.getTranslateX()) > screenWidth;
 	}
 
 	protected void winGame() {
