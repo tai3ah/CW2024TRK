@@ -1,5 +1,8 @@
-package com.example.demo;
+package com.example.demo.levels;
 
+import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.EnemyPlane;
+import com.example.demo.ui.LevelView;
 import javafx.stage.Stage;
 
 public class LevelOne extends LevelParent {

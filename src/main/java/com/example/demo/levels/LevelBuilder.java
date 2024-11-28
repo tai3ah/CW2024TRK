@@ -1,9 +1,5 @@
-package com.example.demo.builder;
+package com.example.demo.levels;
 
-import com.example.demo.LevelParent;
-import com.example.demo.LevelOne;
-import com.example.demo.LevelTwo;
-import com.example.demo.MainMenuPage;
 import javafx.stage.Stage;
 
 public class LevelBuilder {
