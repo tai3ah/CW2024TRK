@@ -21,17 +21,20 @@ public class PauseManager {
     private final Timeline timeline;
     private final double screenWidth;
     private final double screenHeight;
+    private final ImageView background;
 
     private static final String PAUSE_BUTTON = "/com/example/demo/images/pause.png";
     private static final String RESUME_BUTTON = "/com/example/demo/images/resume.png";
     private static final String QUIT_LEVEL_BUTTON = "/com/example/demo/images/quitLevel.png";
 
-    public PauseManager(Pane root, Stage primaryStage, Timeline timeline, double screenWidth, double screenHeight) {
+
+    public PauseManager(Pane root, Stage primaryStage, Timeline timeline, double screenWidth, double screenHeight, ImageView background) {
         this.root = root;
         this.primaryStage = primaryStage;
         this.timeline = timeline;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.background = background;
     }
 
     public void initializePauseButton() {
@@ -104,11 +107,33 @@ public class PauseManager {
                     root.getChildren().remove(countdownLabel);
                     pauseButton.setDisable(false);
                     timeline.play();
+
+                    // Regain focus for input handling
+                    background.requestFocus(); // Ensure the background has focus after resuming
                 })
         );
         countdownTimeline.setCycleCount(1);
         countdownTimeline.play();
     }
+    /*private void resumeGameWithCountdown(Button pauseButton) {
+        Label countdownLabel = new Label("3");
+        countdownLabel.setStyle("-fx-font-size: 50px; -fx-text-fill: white;");
+        countdownLabel.setLayoutX(screenWidth / 2 - 25);
+        countdownLabel.setLayoutY(screenHeight / 2 - 25);
+        root.getChildren().add(countdownLabel);
+
+        Timeline countdownTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), e -> countdownLabel.setText("2")),
+                new KeyFrame(Duration.seconds(2), e -> countdownLabel.setText("1")),
+                new KeyFrame(Duration.seconds(3), e -> {
+                    root.getChildren().remove(countdownLabel);
+                    pauseButton.setDisable(false);
+                    timeline.play();
+                })
+        );
+        countdownTimeline.setCycleCount(1);
+        countdownTimeline.play();
+    }*/
 
     private void goToMainMenu() {
         timeline.stop();

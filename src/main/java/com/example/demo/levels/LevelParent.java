@@ -1,29 +1,25 @@
 package com.example.demo.levels;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
-
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.FighterPlane;
 import com.example.demo.actors.UserPlane;
 import com.example.demo.managers.CollisionManager;
+import com.example.demo.managers.InputHandler;
 import com.example.demo.managers.PauseManager;
 import com.example.demo.ui.LevelView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public abstract class LevelParent {
 
@@ -53,6 +49,7 @@ public abstract class LevelParent {
 
 	private final PauseManager pauseManager;
 	private final CollisionManager collisionManager;
+	private final InputHandler inputHandler; // New
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -74,8 +71,12 @@ public abstract class LevelParent {
 		initializeTimeline();
 		friendlyUnits.add(user);
 
-		this.pauseManager = new PauseManager(root, primaryStage, timeline, screenWidth, screenHeight);
+		this.pauseManager = new PauseManager(root, primaryStage, timeline, screenWidth, screenHeight, background);
 		this.collisionManager = new CollisionManager(root, user, enemyUnits, friendlyUnits, userProjectiles, enemyProjectiles);
+
+		// Create and initialize InputHandler
+		this.inputHandler = new InputHandler(user, background);
+		this.inputHandler.setOnFire(this::fireProjectile);
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -125,26 +126,11 @@ public abstract class LevelParent {
 	}
 
 	private void initializeBackground() {
-		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
-		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP) user.moveUp();
-				if (kc == KeyCode.DOWN) user.moveDown();
-				if (kc == KeyCode.SPACE) fireProjectile();
-			}
-		});
-		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
-			}
-		});
 		root.getChildren().add(background);
-
 		pauseManager.initializePauseButton();
+		inputHandler.initializeInputHandlers(); // Delegate input handling to InputHandler
 	}
 
 	private void fireProjectile() {
