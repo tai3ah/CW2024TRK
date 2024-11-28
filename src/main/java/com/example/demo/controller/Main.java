@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import com.example.demo.MainMenuPage;
+import com.example.demo.ui.MainMenuPage;
 
 public class Main extends Application {
 

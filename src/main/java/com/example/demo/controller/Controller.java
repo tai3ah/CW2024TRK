@@ -4,9 +4,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import com.example.demo.LevelParent;
-import com.example.demo.builder.LevelBuilder;
-import java.util.function.Consumer;
+import com.example.demo.levels.LevelParent;
+import com.example.demo.levels.LevelBuilder;
 
 public class Controller {
 
