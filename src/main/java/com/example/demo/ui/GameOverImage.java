@@ -18,7 +18,7 @@ public class GameOverImage extends ImageView {
 }
 */
 
-package com.example.demo;
+package com.example.demo.ui;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

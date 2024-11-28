@@ -1,8 +1,7 @@
-package com.example.demo;
+package com.example.demo.ui;
 
 import javafx.scene.text.Text;
 import javafx.scene.layout.Pane;
-import javafx.geometry.Bounds;
 
 public class LevelView {
 	
@@ -35,7 +34,7 @@ public class LevelView {
 
 		// Initialize kill count display
 		this.killCountText = new Text("Kill Count: 0");
-		killCountText.setStyle("-fx-font-size: 20px; -fx-fill: black; -fx-font-weight: bold;");
+		killCountText.setStyle("-fx-font-size: 20px; -fx-fill: white; -fx-font-weight: bold;");
 		root.getChildren().add(killCountText); // Add kill count text to the root
 
 		// Bindings for the kill count position
