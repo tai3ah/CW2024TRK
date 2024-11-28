@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.managers;
 
+import com.example.demo.ui.MainMenuPage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
@@ -14,7 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-class PauseManager {
+public class PauseManager {
     private final Pane root;
     private final Stage primaryStage;
     private final Timeline timeline;

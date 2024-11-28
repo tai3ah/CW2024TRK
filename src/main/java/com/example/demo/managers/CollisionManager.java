@@ -1,10 +1,13 @@
-package com.example.demo;
+package com.example.demo.managers;
 
+import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.Boss;
+import com.example.demo.actors.UserPlane;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
 
-class CollisionManager {
+public class CollisionManager {
     private final Pane root;
     private final UserPlane user;
     private final List<ActiveActorDestructible> friendlyUnits;
