@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.actors;
 
 public class UserPlane extends FighterPlane {
 
