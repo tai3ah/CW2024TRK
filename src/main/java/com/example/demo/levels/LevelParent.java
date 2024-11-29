@@ -1,6 +1,6 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.GameEntity;
 import com.example.demo.actors.FighterPlane;
 import com.example.demo.actors.UserPlane;
 import com.example.demo.managers.CollisionManager;
@@ -36,10 +36,10 @@ public abstract class LevelParent {
 	private final Scene scene;
 	private final ImageView background;
 
-	private final List<ActiveActorDestructible> friendlyUnits;
-	private final List<ActiveActorDestructible> enemyUnits;
-	private final List<ActiveActorDestructible> userProjectiles;
-	private final List<ActiveActorDestructible> enemyProjectiles;
+	private final List<GameEntity> friendlyUnits;
+	private final List<GameEntity> enemyUnits;
+	private final List<GameEntity> userProjectiles;
+	private final List<GameEntity> enemyProjectiles;
 
 	private int currentNumberOfEnemies;
 	private final LevelView levelView;
@@ -134,7 +134,7 @@ public abstract class LevelParent {
 	}
 
 	private void fireProjectile() {
-		ActiveActorDestructible projectile = user.fireProjectile();
+		GameEntity projectile = user.fireProjectile();
 		root.getChildren().add(projectile);
 		userProjectiles.add(projectile);
 	}
@@ -143,7 +143,7 @@ public abstract class LevelParent {
 		enemyUnits.forEach(enemy -> spawnEnemyProjectile(((FighterPlane) enemy).fireProjectile()));
 	}
 
-	private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
+	private void spawnEnemyProjectile(GameEntity projectile) {
 		if (projectile != null) {
 			root.getChildren().add(projectile);
 			enemyProjectiles.add(projectile);
@@ -151,10 +151,10 @@ public abstract class LevelParent {
 	}
 
 	private void updateActors() {
-		friendlyUnits.forEach(ActiveActorDestructible::updateActor);
-		enemyUnits.forEach(ActiveActorDestructible::updateActor);
-		userProjectiles.forEach(ActiveActorDestructible::updateActor);
-		enemyProjectiles.forEach(ActiveActorDestructible::updateActor);
+		friendlyUnits.forEach(GameEntity::updateActor);
+		enemyUnits.forEach(GameEntity::updateActor);
+		userProjectiles.forEach(GameEntity::updateActor);
+		enemyProjectiles.forEach(GameEntity::updateActor);
 	}
 
 	private void removeAllDestroyedActors() {
@@ -164,8 +164,8 @@ public abstract class LevelParent {
 		removeDestroyedActors(enemyProjectiles);
 	}
 
-	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(ActiveActorDestructible::isDestroyed)
+	private void removeDestroyedActors(List<GameEntity> actors) {
+		List<GameEntity> destroyedActors = actors.stream().filter(GameEntity::isDestroyed)
 				.toList();
 		root.getChildren().removeAll(destroyedActors);
 		actors.removeAll(destroyedActors);
@@ -201,7 +201,7 @@ public abstract class LevelParent {
 		return enemyUnits.size();
 	}
 
-	protected void addEnemyUnit(ActiveActorDestructible enemy) {
+	protected void addEnemyUnit(GameEntity enemy) {
 		enemyUnits.add(enemy);
 		root.getChildren().add(enemy);
 	}

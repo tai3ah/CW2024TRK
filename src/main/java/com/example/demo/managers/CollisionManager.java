@@ -1,6 +1,6 @@
 package com.example.demo.managers;
 
-import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.GameEntity;
 import com.example.demo.actors.Boss;
 import com.example.demo.actors.UserPlane;
 import javafx.scene.layout.Pane;
@@ -10,13 +10,13 @@ import java.util.List;
 public class CollisionManager {
     private final Pane root;
     private final UserPlane user;
-    private final List<ActiveActorDestructible> friendlyUnits;
-    private final List<ActiveActorDestructible> enemyUnits;
-    private final List<ActiveActorDestructible> userProjectiles;
-    private final List<ActiveActorDestructible> enemyProjectiles;
+    private final List<GameEntity> friendlyUnits;
+    private final List<GameEntity> enemyUnits;
+    private final List<GameEntity> userProjectiles;
+    private final List<GameEntity> enemyProjectiles;
 
-    public CollisionManager(Pane root, UserPlane user, List<ActiveActorDestructible> enemyUnits, List<ActiveActorDestructible> friendlyUnits,
-                            List<ActiveActorDestructible> userProjectiles, List<ActiveActorDestructible> enemyProjectiles) {
+    public CollisionManager(Pane root, UserPlane user, List<GameEntity> enemyUnits, List<GameEntity> friendlyUnits,
+                            List<GameEntity> userProjectiles, List<GameEntity> enemyProjectiles) {
         this.root = root;
         this.user = user;
         this.enemyUnits = enemyUnits;
@@ -33,8 +33,8 @@ public class CollisionManager {
     }
 
     private void handleUserProjectileCollisions() {
-        for (ActiveActorDestructible projectile : userProjectiles)
-            for (ActiveActorDestructible enemy : enemyUnits) {
+        for (GameEntity projectile : userProjectiles)
+            for (GameEntity enemy : enemyUnits) {
                 if (!enemy.isDestroyed() && projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
                     if (enemy instanceof Boss) {
                         Boss boss = (Boss) enemy;
@@ -66,7 +66,7 @@ public class CollisionManager {
     }
 
     private void handleEnemyPenetration() {
-        for (ActiveActorDestructible enemy : enemyUnits) {
+        for (GameEntity enemy : enemyUnits) {
             if (enemyHasPenetratedDefenses(enemy)) {
                 enemy.takeDamage();
                 enemy.destroy();
@@ -74,9 +74,9 @@ public class CollisionManager {
         }
     }
 
-    private void handleCollisions(List<ActiveActorDestructible> actors1, List<ActiveActorDestructible> actors2) {
-        for (ActiveActorDestructible actor : actors2) {
-            for (ActiveActorDestructible otherActor : actors1) {
+    private void handleCollisions(List<GameEntity> actors1, List<GameEntity> actors2) {
+        for (GameEntity actor : actors2) {
+            for (GameEntity otherActor : actors1) {
                 if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
                     actor.takeDamage();
                     otherActor.takeDamage();
@@ -85,7 +85,7 @@ public class CollisionManager {
         }
     }
 
-    private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
+    private boolean enemyHasPenetratedDefenses(GameEntity enemy) {
         return Math.abs(enemy.getTranslateX()) > root.getWidth();
     }
 }

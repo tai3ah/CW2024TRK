@@ -37,7 +37,7 @@ public class UserPlane extends FighterPlane {
 	}
 	
 	@Override
-	public ActiveActorDestructible fireProjectile() {
+	public GameEntity fireProjectile() {
 		return new UserProjectile(PROJECTILE_X_POSITION, getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
 	}
 
