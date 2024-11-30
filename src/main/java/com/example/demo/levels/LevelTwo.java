@@ -3,17 +3,20 @@ package com.example.demo.levels;
 import com.example.demo.actors.Boss;
 import com.example.demo.ui.LevelView;
 import com.example.demo.ui.LevelViewLevelTwo;
+import com.example.demo.factories.BossPlaneFactory;
 import javafx.stage.Stage;
 
 public class LevelTwo extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.png";
 	private static final int PLAYER_INITIAL_HEALTH = 5;
+	private static final BossPlaneFactory bossFactory = new BossPlaneFactory();
 	private final Boss boss;
 
 	public LevelTwo(double screenHeight, double screenWidth, Stage primaryStage) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
-		boss = new Boss();
+		//boss = new Boss();
+		boss = bossFactory.createEnemy(1000, 400);
 	}
 
 

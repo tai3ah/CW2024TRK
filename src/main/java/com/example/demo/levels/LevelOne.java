@@ -3,6 +3,7 @@ package com.example.demo.levels;
 import com.example.demo.actors.GameEntity;
 import com.example.demo.actors.EnemyPlane;
 import com.example.demo.ui.LevelView;
+import com.example.demo.factories.EnemyPlaneFactory;
 import javafx.stage.Stage;
 
 public class LevelOne extends LevelParent {
@@ -15,7 +16,7 @@ public class LevelOne extends LevelParent {
 
 	private static final int KILLS_TO_ADVANCE = 10;
 
-
+	private final EnemyPlaneFactory enemyFactory = new EnemyPlaneFactory();
 	private static final double ENEMY_SPAWN_PROBABILITY = .20;
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 
@@ -49,7 +50,8 @@ public class LevelOne extends LevelParent {
 		for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
 			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
 				double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
-				GameEntity newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+				//GameEntity newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+				GameEntity newEnemy = enemyFactory.createEnemy(getScreenWidth(), newEnemyInitialYPosition);
 				addEnemyUnit(newEnemy);
 			}
 		}
