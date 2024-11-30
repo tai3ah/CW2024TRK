@@ -1,5 +1,8 @@
 package com.example.demo.managers;
 
+import com.example.demo.factories.PauseButtonFactory;
+import com.example.demo.factories.ResumeButtonFactory;
+import com.example.demo.factories.QuitLevelButtonFactory;
 import com.example.demo.ui.MainMenuPage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,10 +26,9 @@ public class PauseManager {
     private final double screenHeight;
     private final ImageView background;
 
-    private static final String PAUSE_BUTTON = "/com/example/demo/images/pause.png";
-    private static final String RESUME_BUTTON = "/com/example/demo/images/resume.png";
-    private static final String QUIT_LEVEL_BUTTON = "/com/example/demo/images/quitLevel.png";
-
+    private final PauseButtonFactory pauseButtonFactory = new PauseButtonFactory();
+    private final ResumeButtonFactory resumeButtonFactory = new ResumeButtonFactory();
+    private final QuitLevelButtonFactory quitLevelButtonFactory = new QuitLevelButtonFactory();
 
     public PauseManager(Pane root, Stage primaryStage, Timeline timeline, double screenWidth, double screenHeight, ImageView background) {
         this.root = root;
@@ -38,16 +40,9 @@ public class PauseManager {
     }
 
     public void initializePauseButton() {
-        Image pauseImage = new Image(getClass().getResourceAsStream(PAUSE_BUTTON));
-        ImageView pauseImageView = new ImageView(pauseImage);
-        pauseImageView.setFitWidth(80);
-        pauseImageView.setFitHeight(60);
-
-        Button pauseButton = new Button();
-        pauseButton.setGraphic(pauseImageView);
+        Button pauseButton = pauseButtonFactory.createButton();
         pauseButton.setLayoutX(screenWidth - 100);
         pauseButton.setLayoutY(20);
-        pauseButton.setStyle("-fx-background-color: transparent;");
         pauseButton.setOnAction(event -> showPauseWindow(pauseButton));
         root.getChildren().add(pauseButton);
     }
@@ -62,28 +57,14 @@ public class PauseManager {
         Label pauseLabel = new Label("GAME PAUSED");
         pauseLabel.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 30px; -fx-text-fill: #FFD700;");
 
-        Image resumeImage = new Image(getClass().getResourceAsStream(RESUME_BUTTON));
-        ImageView resumeImageView = new ImageView(resumeImage);
-        resumeImageView.setFitWidth(100);
-        resumeImageView.setFitHeight(60);
-
-        Button resumeButton = new Button();
-        resumeButton.setGraphic(resumeImageView);
-        resumeButton.setStyle("-fx-background-color: transparent;");
+        Button resumeButton = resumeButtonFactory.createButton();
         resumeButton.setOnAction(event -> {
             root.getChildren().remove(pauseOverlay);
             pauseButton.setDisable(true);
             resumeGameWithCountdown(pauseButton);
         });
 
-        Image quitLevelImage = new Image(getClass().getResourceAsStream(QUIT_LEVEL_BUTTON));
-        ImageView quitLevelImageView = new ImageView(quitLevelImage);
-        quitLevelImageView.setFitWidth(100);
-        quitLevelImageView.setFitHeight(60);
-
-        Button quitLevelButton = new Button();
-        quitLevelButton.setGraphic(quitLevelImageView);
-        quitLevelButton.setStyle("-fx-background-color: transparent;");
+        Button quitLevelButton = quitLevelButtonFactory.createButton();
         quitLevelButton.setOnAction(event -> goToMainMenu());
 
         VBox buttonsLayout = new VBox(20, pauseLabel, resumeButton, quitLevelButton);
