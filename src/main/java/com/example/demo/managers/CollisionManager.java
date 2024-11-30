@@ -41,6 +41,7 @@ public class CollisionManager {
                         if (!boss.isShielded()) {
                             boss.takeDamage();
                             System.out.println("Boss hit! Health remaining: " + boss.getHealth());
+
                         } else {
                             System.out.println("Projectile hit the shield. Boss is protected.");
                         }

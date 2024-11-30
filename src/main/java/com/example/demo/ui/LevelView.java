@@ -4,7 +4,7 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.Pane;
 
 public class LevelView {
-	
+
 	private static final double HEART_DISPLAY_X_POSITION = 5;
 	private static final double HEART_DISPLAY_Y_POSITION = 25;
 	private static final int WIN_IMAGE_X_POSITION = 355;
@@ -24,7 +24,7 @@ public class LevelView {
 	private final GameOverImage gameOverImage;
 	private final HeartDisplay heartDisplay;
 	private final Text killCountText; // Kill count display
-	
+
 	public LevelView(Pane root, int heartsToDisplay) {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_DISPLAY_X_POSITION, HEART_DISPLAY_Y_POSITION, heartsToDisplay);
@@ -37,18 +37,9 @@ public class LevelView {
 		killCountText.setStyle("-fx-font-size: 20px; -fx-fill: white; -fx-font-weight: bold;");
 		root.getChildren().add(killCountText); // Add kill count text to the root
 
-		// Bindings for the kill count position
-		//root.widthProperty().addListener((obs, oldVal, newVal) -> updateKillCountPosition());
-		//root.heightProperty().addListener((obs, oldVal, newVal) -> updateKillCountPosition());
-
 		updateKillCountPosition();
-		//root.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> updateKillCountPosition(newBounds));
-	}
 
-	/*private void updateKillCountPosition(Bounds newBounds) {
-		killCountText.setX(newBounds.getWidth() - killCountText.getBoundsInLocal().getWidth() - KILL_COUNT_MARGIN);
-		killCountText.setY(KILL_COUNT_MARGIN);
-	}*/
+	}
 
 	//added
 	private void updateKillCountPosition() {
@@ -77,11 +68,11 @@ public class LevelView {
 		root.getChildren().add(winImage);
 		winImage.showWinImage();
 	}
-	
+
 	public void showGameOverImage() {
 		root.getChildren().add(gameOverImage);
 	}
-	
+
 	public void removeHearts(int heartsRemaining) {
 		int currentNumberOfHearts = heartDisplay.getContainer().getChildren().size();
 		for (int i = 0; i < currentNumberOfHearts - heartsRemaining; i++) {
@@ -93,6 +84,10 @@ public class LevelView {
 	public void updateKillCount(int killCount) {
 		killCountText.setText("Kill Count: " + killCount);
 		killCountText.toFront();
+	}
+
+	public Text getKillCountText() {
+		return killCountText;
 	}
 
 }

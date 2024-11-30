@@ -1,8 +1,9 @@
 package com.example.demo.actors;
 
+import com.example.demo.ui.LevelViewLevelTwo;
 import com.example.demo.ui.ShieldImage;
-
 import java.util.*;
+//import javafx.application.Platform;
 
 public class Boss extends FighterPlane {
 
@@ -18,7 +19,7 @@ public class Boss extends FighterPlane {
 	private static final double BOSS_SHIELD_PROBABILITY = 0.002;
 	private static final int IMAGE_HEIGHT = 75;
 	private static final int VERTICAL_VELOCITY = 8;
-	private static final int HEALTH = 10;
+	private static final int HEALTH = 20;
 	private static final int MOVE_FREQUENCY_PER_CYCLE = 5;
 	private static final int ZERO = 0;
 	private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
@@ -32,6 +33,7 @@ public class Boss extends FighterPlane {
 	private int indexOfCurrentMove;
 	private int framesWithShieldActivated;
 	private ShieldImage shieldImage;
+	private LevelViewLevelTwo levelView;
 
 	public Boss() {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
@@ -47,6 +49,11 @@ public class Boss extends FighterPlane {
 
 	public ShieldImage getShieldImage() {
 		return shieldImage;
+	}
+
+	// Setter method to set the level view reference
+	public void setLevelView(LevelViewLevelTwo levelView) {
+		this.levelView = levelView;
 	}
 
 	@Override
@@ -74,13 +81,39 @@ public class Boss extends FighterPlane {
 		return bossFiresInCurrentFrame() ? new BossProjectile(getProjectileInitialPosition()) : null;
 	}
 
-	@Override
+	/*@Override
 	public void takeDamage() {
 		if (!isShielded) {
 			super.takeDamage();
 			System.out.println("Boss Health: " + getHealth());
 		}
+	} */
+
+	@Override
+	public void takeDamage() {
+		if (!isShielded) {
+			super.takeDamage();
+			int currentHealth = getHealth();
+			System.out.println("Boss took damage. Current Health: " + currentHealth); // Debug line
+
+			if (levelView != null) {
+				// Pass the current health value to ensure synchronization
+				javafx.application.Platform.runLater(() -> levelView.updateBossHealth(currentHealth));
+			}
+		}
 	}
+
+
+	/*@Override
+	public void takeDamage() {
+		if (!isShielded) {
+			super.takeDamage();
+			System.out.println("Boss Health: " + getHealth());
+			if (levelView != null) {
+				Platform.runLater(() -> levelView.updateBossHealth(getHealth())); // Ensure UI update happens on JavaFX thread
+			}
+		}
+	} */
 
 	private void initializeMovePattern() {
 		for (int i = 0; i < MOVE_FREQUENCY_PER_CYCLE; i++) {

@@ -107,7 +107,7 @@ public abstract class LevelParent {
 		levelChangeListeners.forEach(listener -> listener.accept(levelName));
 	}
 
-	private void updateScene() {
+	protected void updateScene() {
 		spawnEnemyUnits();
 		updateActors();
 		generateEnemyFire();
@@ -117,6 +117,11 @@ public abstract class LevelParent {
 		updateKillCount();
 		updateLevelView();
 		checkIfGameOver();
+	}
+
+	// Add an accessor for levelView
+	protected LevelView getLevelView() {
+		return levelView;
 	}
 
 	private void initializeTimeline() {
