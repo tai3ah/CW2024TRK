@@ -135,7 +135,7 @@ public abstract class LevelParent {
 		background.setFitWidth(screenWidth);
 		root.getChildren().add(background);
 		pauseManager.initializePauseButton();
-		inputHandler.initializeInputHandlers(); // Delegate input handling to InputHandler
+		inputHandler.initializeInputHandlers();
 	}
 
 	private void fireProjectile() {

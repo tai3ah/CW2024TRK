@@ -12,7 +12,7 @@ public class LevelTwo extends LevelParent {
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private Boss boss;
 	private static final BossPlaneFactory bossFactory = new BossPlaneFactory();
-
+	private static final String NEXT_LEVEL = "LevelThree";
 
 	public LevelTwo(double screenHeight, double screenWidth, Stage primaryStage) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
@@ -33,7 +33,7 @@ public class LevelTwo extends LevelParent {
 			loseGame();
 		}
 		else if (boss.isDestroyed()) {
-			winGame();
+			goToNextLevel(NEXT_LEVEL);
 		}
 	}
 
