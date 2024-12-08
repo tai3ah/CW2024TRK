@@ -22,7 +22,7 @@ public class LevelView {
 	private final Pane root;
 	private final WinImage winImage;
 	private final GameOverImage gameOverImage;
-	private final HeartDisplay heartDisplay;
+	final HeartDisplay heartDisplay;
 	private final Text killCountText; // Kill count display
 
 	public LevelView(Pane root, int heartsToDisplay) {
@@ -65,13 +65,19 @@ public class LevelView {
 	}
 
 	public void showWinImage() {
-		root.getChildren().add(winImage);
+		if (!root.getChildren().contains(winImage)) { // Check if winImage is already added
+			root.getChildren().add(winImage);        // Add only if it's not already present
+		}
 		winImage.showWinImage();
 	}
 
 	public void showGameOverImage() {
-		root.getChildren().add(gameOverImage);
+		if (!root.getChildren().contains(gameOverImage)) { // Ensure no duplicate addition
+			root.getChildren().add(gameOverImage);
+		}
+		gameOverImage.toFront(); // Bring the game over image to the front
 	}
+
 
 	public void removeHearts(int heartsRemaining) {
 		int currentNumberOfHearts = heartDisplay.getContainer().getChildren().size();
@@ -79,6 +85,25 @@ public class LevelView {
 			heartDisplay.removeHeart();
 		}
 	}
+
+
+	/*public void addHearts(int heartsToAdd) {
+		for (int i = 0; i < heartsToAdd; i++) {
+			heartDisplay.addHeart();
+		}
+	}
+*/
+	public void updateHearts(int currentHearts) {
+		heartDisplay.updateHearts(currentHearts);
+	}
+
+	public void addHearts(int heartsToAdd) {
+		for (int i = 0; i < heartsToAdd; i++) {
+			heartDisplay.addHeart();
+		}
+	}
+
+
 
 	// Method to update the kill count display
 	public void updateKillCount(int killCount) {

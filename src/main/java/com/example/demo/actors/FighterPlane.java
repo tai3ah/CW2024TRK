@@ -2,7 +2,7 @@ package com.example.demo.actors;
 
 public abstract class FighterPlane extends GameEntity {
 
-	private int health;
+	public int health;
 
 	public FighterPlane(String imageName, int imageHeight, double initialXPos, double initialYPos, int health) {
 		super(imageName, imageHeight, initialXPos, initialYPos);

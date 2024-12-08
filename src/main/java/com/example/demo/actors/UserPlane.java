@@ -74,4 +74,15 @@ public class UserPlane extends FighterPlane {
 		numberOfKills++;
 	}
 
+	// Method to increase health
+	public void increaseHealth(int amount) {
+		this.health += amount;
+		System.out.println("User health increased. Current health: " + this.health);
+	}
+
+	// Getter for health
+	public int getHealth() {
+		return health;
+	}
+
 }

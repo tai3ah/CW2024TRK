@@ -36,6 +36,7 @@ public class InputHandler {
         }
     }
 
+
     private void handleKeyReleased(KeyEvent e) {
         switch (e.getCode()) {
             case UP, DOWN, LEFT, RIGHT -> userPlane.stop();
