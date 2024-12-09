@@ -3,7 +3,7 @@ import com.example.demo.actors.Boss;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
-//public class LevelViewLevelTwo extends LevelView {
+
 public class LevelViewLevelTwo extends LevelView {
 	private Boss boss;
 
@@ -17,7 +17,6 @@ public class LevelViewLevelTwo extends LevelView {
 	private final ShieldImage shieldImage;
 	private final Text bossHealthText;
 
-	//public LevelViewLevelTwo(Pane root, int heartsToDisplay, Boss boss) {
 	public LevelViewLevelTwo(Pane root, int heartsToDisplay, Boss boss) {
 		super(root, heartsToDisplay);
 		this.boss = boss;

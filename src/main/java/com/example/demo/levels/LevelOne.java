@@ -24,6 +24,7 @@ public class LevelOne extends LevelParent {
 	public LevelOne(double screenHeight, double screenWidth,  Stage primaryStage) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
 
+
 	}
 
 
