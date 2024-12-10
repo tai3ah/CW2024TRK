@@ -4,6 +4,7 @@ import com.example.demo.factories.PauseButtonFactory;
 import com.example.demo.factories.ResumeButtonFactory;
 import com.example.demo.factories.QuitLevelButtonFactory;
 import com.example.demo.ui.MainMenuPage;
+import com.example.demo.managers.SoundManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
@@ -26,6 +27,7 @@ public class PauseManager {
     private final double screenHeight;
     private final ImageView background;
 
+    private final SoundManager soundManager = SoundManager.getInstance();
     private final PauseButtonFactory pauseButtonFactory = new PauseButtonFactory();
     private final ResumeButtonFactory resumeButtonFactory = new ResumeButtonFactory();
     private final QuitLevelButtonFactory quitLevelButtonFactory = new QuitLevelButtonFactory();
@@ -119,6 +121,7 @@ public class PauseManager {
     private void goToMainMenu() {
         timeline.stop();
 
+        soundManager.stopBackgroundSound();
         MainMenuPage mainMenuPage = new MainMenuPage();
 
         StackPane root = new StackPane();

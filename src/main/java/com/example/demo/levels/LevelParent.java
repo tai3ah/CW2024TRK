@@ -7,6 +7,7 @@ import com.example.demo.factories.LevelEndScreenFactory;
 import com.example.demo.managers.CollisionManager;
 import com.example.demo.managers.InputHandler;
 import com.example.demo.managers.PauseManager;
+import com.example.demo.managers.SoundManager;
 import com.example.demo.ui.LevelViewLevelOne;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -32,6 +33,7 @@ public abstract class LevelParent {
 
 	private final Pane root;
 
+	private final SoundManager soundManager = SoundManager.getInstance();
 	private final Timeline timeline;
 	private final UserPlane user;
 	private final Scene scene;
@@ -98,6 +100,7 @@ public abstract class LevelParent {
 	}
 
 	public void startGame() {
+		soundManager.playBackgroundSound();
 		background.requestFocus();
 		timeline.play();
 	}
@@ -201,12 +204,16 @@ public abstract class LevelParent {
 
 	protected void winGame() {
 		stopGame();
+		soundManager.stopBackgroundSound();
+		soundManager.playWinSound();
 		endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
 		endScreenFactory.showWinLevelScreen(this::restartLevel, this::goToNextLevel);
 	}
 
 	protected void loseGame() {
 		stopGame();
+		soundManager.stopBackgroundSound();
+		soundManager.playLoseSound();
 		endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
 		endScreenFactory.showLoseLevelScreen(this::restartLevel);
 	}
@@ -269,5 +276,6 @@ public abstract class LevelParent {
 		if (timeline != null) {
 			timeline.stop();
 		}
+		soundManager.stopBackgroundSound();
 	}
 }
