@@ -3,10 +3,11 @@ package com.example.demo.levels;
 import com.example.demo.actors.GameEntity;
 import com.example.demo.actors.FighterPlane;
 import com.example.demo.actors.UserPlane;
+import com.example.demo.factories.LevelEndScreenFactory;
 import com.example.demo.managers.CollisionManager;
 import com.example.demo.managers.InputHandler;
 import com.example.demo.managers.PauseManager;
-import com.example.demo.ui.LevelView;
+import com.example.demo.ui.LevelViewLevelOne;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Scene;
@@ -42,7 +43,7 @@ public abstract class LevelParent {
 	private final List<GameEntity> enemyProjectiles;
 
 	private int currentNumberOfEnemies;
-	private final LevelView levelView;
+	private final LevelViewLevelOne levelView;
 
 	private final Stage primaryStage;
 	private final List<Consumer<String>> levelChangeListeners = new ArrayList<>();
@@ -50,8 +51,10 @@ public abstract class LevelParent {
 	private final PauseManager pauseManager;
 	private final CollisionManager collisionManager;
 	private final InputHandler inputHandler; // New
+	private final LevelEndScreenFactory endScreenFactory;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage primaryStage) {
+		this.endScreenFactory = new LevelEndScreenFactory();
 		this.primaryStage = primaryStage;
 		this.root = new Pane();
 		this.scene = new Scene(root, screenWidth, screenHeight);
@@ -85,7 +88,7 @@ public abstract class LevelParent {
 
 	protected abstract void spawnEnemyUnits();
 
-	protected abstract LevelView instantiateLevelView();
+	protected abstract LevelViewLevelOne instantiateLevelView();
 
 	public Scene initializeScene() {
 		initializeBackground();
@@ -103,9 +106,9 @@ public abstract class LevelParent {
 		levelChangeListeners.add(listener);
 	}
 
-	protected void goToNextLevel(String levelName) {
-		levelChangeListeners.forEach(listener -> listener.accept(levelName));
-	}
+	//protected void goToNextLevel(String levelName) {
+	//	levelChangeListeners.forEach(listener -> listener.accept(levelName));
+	//}
 
 	protected void updateScene() {
 		spawnEnemyUnits();
@@ -120,7 +123,7 @@ public abstract class LevelParent {
 	}
 
 	// Add an accessor for levelView
-	protected LevelView getLevelView() {
+	protected LevelViewLevelOne getLevelView() {
 		return levelView;
 	}
 
@@ -184,7 +187,7 @@ public abstract class LevelParent {
 		levelView.updateKillCount(user.getNumberOfKills());
 	}
 
-	protected void winGame() {
+	/*protected void winGame() {
 		timeline.stop();
 		levelView.showWinImage();
 	}
@@ -194,9 +197,40 @@ public abstract class LevelParent {
 		levelView.showGameOverImage();
 	}
 
+	 */
+
+	protected void winGame() {
+		stopGame();
+		endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
+		endScreenFactory.showWinLevelScreen(this::restartLevel, this::goToNextLevel);
+	}
+
+	protected void loseGame() {
+		stopGame();
+		endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
+		endScreenFactory.showLoseLevelScreen(this::restartLevel);
+	}
+
+
+	private void restartLevel() {
+		LevelParent currentLevel = LevelBuilder.createLevel(getClass().getSimpleName(), screenHeight, screenWidth, primaryStage);
+		primaryStage.setScene(currentLevel.initializeScene());
+		currentLevel.startGame();
+	}
+
+	protected abstract void goToNextLevel();
 	protected UserPlane getUser() {
 		return user;
 	}
+
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	public double getScreenHeight() {
+		return screenHeight;
+	}
+
 
 	public Pane getRoot() {
 		return root;

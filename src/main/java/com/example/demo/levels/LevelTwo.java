@@ -1,7 +1,7 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.Boss;
-import com.example.demo.ui.LevelView;
+import com.example.demo.ui.LevelViewLevelOne;
 import com.example.demo.ui.LevelViewLevelTwo;
 import com.example.demo.factories.BossPlaneFactory;
 import javafx.stage.Stage;
@@ -12,7 +12,7 @@ public class LevelTwo extends LevelParent {
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private Boss boss;
 	private static final BossPlaneFactory bossFactory = new BossPlaneFactory();
-	private static final String NEXT_LEVEL = "LevelFour";
+	private static final String NEXT_LEVEL = "LevelThree";
 
 	public LevelTwo(double screenHeight, double screenWidth, Stage primaryStage) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
@@ -33,9 +33,17 @@ public class LevelTwo extends LevelParent {
 			loseGame();
 		}
 		else if (boss.isDestroyed()) {
-			goToNextLevel(NEXT_LEVEL);
+			winGame();
 		}
 	}
+
+	@Override
+	protected void goToNextLevel() {
+		LevelParent nextLevel = LevelBuilder.createLevel(NEXT_LEVEL, getScreenHeight(), getScreenWidth(), getPrimaryStage());
+		getPrimaryStage().setScene(nextLevel.initializeScene());
+		nextLevel.startGame();
+	}
+
 
 	@Override
 	protected void spawnEnemyUnits() {
@@ -44,7 +52,7 @@ public class LevelTwo extends LevelParent {
 		}
 	}
 	@Override
-	protected LevelView instantiateLevelView() {
+	protected LevelViewLevelOne instantiateLevelView() {
 		if (boss == null) {
 			boss = bossFactory.createEnemy(1000, 400); // Ensure boss is instantiated
 		}

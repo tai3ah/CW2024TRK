@@ -3,11 +3,16 @@ package com.example.demo.levels;
 import com.example.demo.actors.*;
 import com.example.demo.factories.DroneFactory;
 import com.example.demo.factories.EnemyPlaneFactory;
+import com.example.demo.factories.GameCompletionScreenFactory;
 import com.example.demo.ui.LevelViewLevelFour;
-import com.example.demo.ui.LevelView;
+import com.example.demo.ui.LevelViewLevelOne;
+import com.example.demo.ui.MainMenuPage;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -23,7 +28,7 @@ public class LevelFour extends LevelParent {
     private static final int KILLS_TO_ADVANCE = 10;
     private static final double ENEMY_SPAWN_PROBABILITY = .20;
     private static final int TOTAL_ENEMIES = 3;
-    private static final double HEART_SPAWN_PROBABILITY = 0.01; // Probability of spawning a heart each frame
+    private static final double HEART_SPAWN_PROBABILITY = 0.002; // Probability of spawning a heart each frame
     private static final int HEART_LIFETIME = 7000; // Heart lifetime in milliseconds
 
     private Drone drone;
@@ -62,6 +67,23 @@ public class LevelFour extends LevelParent {
         }
     }
 
+    @Override
+    protected void goToNextLevel() {
+        GameCompletionScreenFactory completionScreen = new GameCompletionScreenFactory(getRoot(), getScreenWidth(), getScreenHeight());
+        completionScreen.showGameCompletionScreen(() -> {
+            MainMenuPage mainMenuPage = new MainMenuPage();
+
+            StackPane root = new StackPane();
+            Scene mainMenuScene = new Scene(root, 1300, 750);
+            getPrimaryStage().setScene(mainMenuScene);
+
+            mainMenuPage.start(getPrimaryStage());
+            getPrimaryStage().sizeToScene();
+            getPrimaryStage().show();
+        });
+    }
+
+
 
     @Override
     protected void spawnEnemyUnits() {
@@ -86,7 +108,7 @@ public class LevelFour extends LevelParent {
     }
 
     @Override
-    protected LevelView instantiateLevelView() {
+    protected LevelViewLevelOne instantiateLevelView() {
         initializeDrone();
         levelView = new LevelViewLevelFour(getRoot(), PLAYER_INITIAL_HEALTH, drone);
         return levelView; // Return as LevelView
@@ -119,6 +141,11 @@ public class LevelFour extends LevelParent {
 
 
     private void spawnHearts() {
+        // Check if the game is active (not paused or ended)
+        if (getTimeline() != null && getTimeline().getStatus() != Animation.Status.RUNNING) {
+            return; // Do not spawn hearts if the game is paused or stopped
+        }
+
         if (Math.random() < HEART_SPAWN_PROBABILITY) {
             double xPosition = Math.random() * getScreenWidth();
             double yPosition = Math.random() * this.screenHeight;
@@ -134,6 +161,7 @@ public class LevelFour extends LevelParent {
             getRoot().getChildren().add(heart);
         }
     }
+
 
   /*  private void checkHeartCollisions() {
         Iterator<ImageView> heartIterator = hearts.iterator();

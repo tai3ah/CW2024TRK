@@ -4,7 +4,7 @@ import com.example.demo.actors.Drone;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
-public class LevelViewLevelFour extends LevelView {
+public class LevelViewLevelFour extends LevelViewLevelOne {
 
     private static final int SCREEN_WIDTH = 1300;
     private static final int SCREEN_HEIGHT = 750;

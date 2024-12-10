@@ -1,7 +1,7 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.FinalBoss;
-import com.example.demo.ui.LevelView;
+import com.example.demo.ui.LevelViewLevelOne;
 import com.example.demo.ui.LevelViewLevelThree;
 import com.example.demo.factories.FinalBossFactory;
 import javafx.stage.Stage;
@@ -12,7 +12,7 @@ public class LevelThree extends LevelParent {
     private static final int PLAYER_INITIAL_HEALTH = 5;
 
 
-    private static final String NEXT_LEVEL = "LevelThree";
+    private static final String NEXT_LEVEL = "LevelFour";
     private FinalBoss finalBoss;
     private static final FinalBossFactory finalBossFactory = new FinalBossFactory();
     private LevelViewLevelThree levelView;
@@ -32,9 +32,17 @@ public class LevelThree extends LevelParent {
         if (userIsDestroyed()) {
             loseGame();
         } else if (finalBoss.isDestroyed()) {
-            goToNextLevel(NEXT_LEVEL);
+            winGame();
         }
     }
+
+    @Override
+    protected void goToNextLevel() {
+        LevelParent nextLevel = LevelBuilder.createLevel(NEXT_LEVEL, getScreenHeight(), getScreenWidth(), getPrimaryStage());
+        getPrimaryStage().setScene(nextLevel.initializeScene());
+        nextLevel.startGame();
+    }
+
 
     @Override
     protected void spawnEnemyUnits() {
@@ -44,7 +52,7 @@ public class LevelThree extends LevelParent {
     }
 
     @Override
-    protected LevelView instantiateLevelView() {
+    protected LevelViewLevelOne instantiateLevelView() {
         if (finalBoss == null) {
             finalBoss = finalBossFactory.createEnemy(1000, 400); // Ensure FinalBoss is created
         }

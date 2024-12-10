@@ -1,5 +1,6 @@
 package com.example.demo.levels;
 
+import com.example.demo.ui.MainMenuPage;
 import javafx.stage.Stage;
 
 public class LevelBuilder {
@@ -8,8 +9,8 @@ public class LevelBuilder {
         return switch (levelName) {
             case "LevelOne" -> new LevelOne(height, width, primaryStage);
             case "LevelTwo" -> new LevelTwo(height, width, primaryStage);
-            case "LevelThree" -> new LevelFour(height, width, primaryStage);
-            case "LevelFour" -> new LevelThree(height, width, primaryStage);
+            case "LevelThree" -> new LevelThree(height, width, primaryStage);
+            case "LevelFour" -> new LevelFour(height, width, primaryStage);
             default -> throw new IllegalArgumentException("Invalid Level Name: " + levelName);
         };
     }

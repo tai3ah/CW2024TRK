@@ -3,7 +3,7 @@ package com.example.demo.ui;
 import javafx.scene.text.Text;
 import javafx.scene.layout.Pane;
 
-public class LevelView {
+public class LevelViewLevelOne {
 
 	private static final double HEART_DISPLAY_X_POSITION = 5;
 	private static final double HEART_DISPLAY_Y_POSITION = 25;
@@ -25,7 +25,7 @@ public class LevelView {
 	final HeartDisplay heartDisplay;
 	private final Text killCountText; // Kill count display
 
-	public LevelView(Pane root, int heartsToDisplay) {
+	public LevelViewLevelOne(Pane root, int heartsToDisplay) {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_DISPLAY_X_POSITION, HEART_DISPLAY_Y_POSITION, heartsToDisplay);
 		this.winImage = new WinImage(WIN_IMAGE_X_POSITION, WIN_IMAGE_Y_POSITION);

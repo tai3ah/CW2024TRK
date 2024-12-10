@@ -1,8 +1,7 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.GameEntity;
-import com.example.demo.actors.EnemyPlane;
-import com.example.demo.ui.LevelView;
+import com.example.demo.ui.LevelViewLevelOne;
 import com.example.demo.factories.EnemyPlaneFactory;
 import javafx.stage.Stage;
 
@@ -35,8 +34,16 @@ public class LevelOne extends LevelParent {
 			loseGame();
 		}
 		else if (userHasReachedKillTarget()) {
-			goToNextLevel(NEXT_LEVEL);
+			winGame();
 		}
+	}
+
+	//added
+	@Override
+	protected void goToNextLevel() {
+		LevelParent nextLevel = LevelBuilder.createLevel(NEXT_LEVEL, getScreenHeight(), getScreenWidth(), getPrimaryStage());
+		getPrimaryStage().setScene(nextLevel.initializeScene());
+		nextLevel.startGame();
 	}
 
 
@@ -59,8 +66,8 @@ public class LevelOne extends LevelParent {
 	}
 
 	@Override
-	protected LevelView instantiateLevelView() {
-		return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+	protected LevelViewLevelOne instantiateLevelView() {
+		return new LevelViewLevelOne(getRoot(), PLAYER_INITIAL_HEALTH);
 	}
 
 	private boolean userHasReachedKillTarget() {

@@ -4,7 +4,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 
-public class LevelViewLevelTwo extends LevelView {
+public class LevelViewLevelTwo extends LevelViewLevelOne {
 	private Boss boss;
 
 	private static final int SHIELD_X_POSITION = 1150;
