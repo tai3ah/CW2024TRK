@@ -7,13 +7,13 @@ import com.example.demo.factories.GameCompletionScreenFactory;
 import com.example.demo.ui.LevelViewLevelFour;
 import com.example.demo.ui.LevelViewLevelOne;
 import com.example.demo.ui.MainMenuPage;
-import javafx.animation.Animation;
-import javafx.animation.AnimationTimer;
+import javafx.animation.*;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,17 +25,19 @@ public class LevelFour extends LevelParent {
     private static final int PLAYER_INITIAL_HEALTH = 5;
     private static final DroneFactory droneFactory = new DroneFactory();
     private static final EnemyPlaneFactory enemyFactory = new EnemyPlaneFactory();
-    private static final int KILLS_TO_ADVANCE = 10;
+    private static final int KILLS_TO_ADVANCE = 20;
     private static final double ENEMY_SPAWN_PROBABILITY = .20;
     private static final int TOTAL_ENEMIES = 3;
-    private static final double HEART_SPAWN_PROBABILITY = 0.002; // Probability of spawning a heart each frame
-    private static final int HEART_LIFETIME = 7000; // Heart lifetime in milliseconds
+    private static final double HEART_SPAWN_PROBABILITY = 0.002;
+    private static final int HEART_LIFETIME = 7000;
+    private static final int DRONE_RESPAWN_DELAY = 10;
 
     private Drone drone;
     private final List<ImageView> hearts = new ArrayList<>();
     private final List<Long> heartSpawnTimes = new ArrayList<>();
     private LevelViewLevelFour levelView;
     private final double screenHeight;
+    private Timeline droneRespawnTimer;
 
     public LevelFour(double screenHeight, double screenWidth, Stage primaryStage) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
@@ -47,7 +49,7 @@ public class LevelFour extends LevelParent {
 
     private void initializeDrone() {
         if (drone == null) {
-            drone = (Drone) droneFactory.createEnemy(0, 0); // Create drone using factory
+            drone = (Drone) droneFactory.createEnemy(0, 0);
         }
     }
 
@@ -62,9 +64,34 @@ public class LevelFour extends LevelParent {
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
             loseGame();
-        } else if (drone != null && drone.isDestroyed() && userHasReachedKillTarget()) {
-            winGame();
+        } else if (drone != null && drone.isDestroyed()) {
+            if (userHasReachedKillTarget()) {
+                winGame();
+            } else {
+                startDroneRespawnTimer(); // Start timer if drone is destroyed but kill target not reached
+            }
         }
+    }
+
+    private void startDroneRespawnTimer() {
+        if (droneRespawnTimer != null && droneRespawnTimer.getStatus() == Animation.Status.RUNNING) {
+            return;
+        }
+        droneRespawnTimer = new Timeline(
+                new KeyFrame(Duration.seconds(DRONE_RESPAWN_DELAY), event -> {
+                    if (!userHasReachedKillTarget()) {
+                        respawnDrone();
+                    }
+                })
+        );
+        droneRespawnTimer.setCycleCount(1);
+        droneRespawnTimer.play();
+    }
+
+    private void respawnDrone() {
+        drone = (Drone) droneFactory.createEnemy(0, 0);
+        addEnemyUnit(drone);
+        levelView.updateDroneHealth(drone.getHealth());
     }
 
     @Override
@@ -83,8 +110,6 @@ public class LevelFour extends LevelParent {
         });
     }
 
-
-
     @Override
     protected void spawnEnemyUnits() {
         if (drone != null && getCurrentNumberOfEnemies() == 0) {
@@ -101,9 +126,9 @@ public class LevelFour extends LevelParent {
     }
 
     protected void updateUI() {
-        levelView.updateKillCount(getUser().getNumberOfKills()); // Reflect user kills
+        levelView.updateKillCount(getUser().getNumberOfKills());
         if (drone != null) {
-            levelView.updateDroneHealth(drone.getHealth()); // Reflect drone health
+            levelView.updateDroneHealth(drone.getHealth());
         }
     }
 
@@ -111,7 +136,7 @@ public class LevelFour extends LevelParent {
     protected LevelViewLevelOne instantiateLevelView() {
         initializeDrone();
         levelView = new LevelViewLevelFour(getRoot(), PLAYER_INITIAL_HEALTH, drone);
-        return levelView; // Return as LevelView
+        return levelView;
     }
 
     private void startHeartSpawnTimer() {
@@ -132,18 +157,15 @@ public class LevelFour extends LevelParent {
             public void handle(long now) {
                 checkIfGameOver();
                 spawnEnemyUnits();
-                updateUI(); // Call updateUI in the game loop
+                updateUI();
             }
         };
         gameLoop.start();
     }
 
-
-
     private void spawnHearts() {
-        // Check if the game is active (not paused or ended)
         if (getTimeline() != null && getTimeline().getStatus() != Animation.Status.RUNNING) {
-            return; // Do not spawn hearts if the game is paused or stopped
+            return;
         }
 
         if (Math.random() < HEART_SPAWN_PROBABILITY) {
@@ -162,31 +184,6 @@ public class LevelFour extends LevelParent {
         }
     }
 
-
-  /*  private void checkHeartCollisions() {
-        Iterator<ImageView> heartIterator = hearts.iterator();
-        Iterator<Long> timeIterator = heartSpawnTimes.iterator();
-
-        while (heartIterator.hasNext() && timeIterator.hasNext()) {
-            ImageView heart = heartIterator.next();
-            Long spawnTime = timeIterator.next();
-
-            if (heart.getBoundsInParent().intersects(getUser().getBoundsInParent())) {
-                // Increase user health by 1
-                getUser().increaseHealth(1);
-
-                // Update heart display
-                levelView.updateKillCount(getUser().getHealth());
-
-                // Remove the collected heart from the game screen
-                getRoot().getChildren().remove(heart);
-                heartIterator.remove();
-                timeIterator.remove();
-            }
-        }
-    }
-*/
-
     private void checkHeartCollisions() {
         Iterator<ImageView> heartIterator = hearts.iterator();
         Iterator<Long> timeIterator = heartSpawnTimes.iterator();
@@ -196,25 +193,14 @@ public class LevelFour extends LevelParent {
             Long spawnTime = timeIterator.next();
 
             if (heart.getBoundsInParent().intersects(getUser().getBoundsInParent())) {
-                // Increase user health by 1
                 getUser().increaseHealth(1);
-
-
-
-                // Update heart display
-              //  levelView.updateHearts(getUser().getHealth());
                 levelView.addHearts(1);
-
-
-                // Remove the collected heart from the game screen
                 getRoot().getChildren().remove(heart);
                 heartIterator.remove();
                 timeIterator.remove();
             }
         }
     }
-
-
 
     private void removeExpiredHearts() {
         long currentTime = System.currentTimeMillis();
@@ -237,6 +223,3 @@ public class LevelFour extends LevelParent {
         return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
     }
 }
-
-
-
