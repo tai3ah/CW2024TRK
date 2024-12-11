@@ -4,14 +4,13 @@ import com.example.demo.factories.PauseButtonFactory;
 import com.example.demo.factories.ResumeButtonFactory;
 import com.example.demo.factories.QuitLevelButtonFactory;
 import com.example.demo.ui.MainMenuPage;
-import com.example.demo.managers.SoundManager;
+import com.example.demo.levels.LevelParent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -26,19 +25,20 @@ public class PauseManager {
     private final double screenWidth;
     private final double screenHeight;
     private final ImageView background;
+    private final LevelParent levelParent;
 
-    private final SoundManager soundManager = SoundManager.getInstance();
     private final PauseButtonFactory pauseButtonFactory = new PauseButtonFactory();
     private final ResumeButtonFactory resumeButtonFactory = new ResumeButtonFactory();
     private final QuitLevelButtonFactory quitLevelButtonFactory = new QuitLevelButtonFactory();
 
-    public PauseManager(Pane root, Stage primaryStage, Timeline timeline, double screenWidth, double screenHeight, ImageView background) {
+    public PauseManager(Pane root, Stage primaryStage, Timeline timeline, double screenWidth, double screenHeight, ImageView background, LevelParent levelParent) {
         this.root = root;
         this.primaryStage = primaryStage;
         this.timeline = timeline;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.background = background;
+        this.levelParent = levelParent;
     }
 
     public void initializePauseButton() {
@@ -51,6 +51,7 @@ public class PauseManager {
 
     private void showPauseWindow(Button pauseButton) {
         timeline.pause();
+        levelParent.setGamePaused(true);
 
         StackPane pauseOverlay = new StackPane();
         pauseOverlay.setPrefSize(screenWidth, screenHeight);
@@ -90,38 +91,17 @@ public class PauseManager {
                     root.getChildren().remove(countdownLabel);
                     pauseButton.setDisable(false);
                     timeline.play();
-
-                    // Regain focus for input handling
-                    background.requestFocus(); // Ensure the background has focus after resuming
+                    levelParent.setGamePaused(false);
+                    background.requestFocus();
                 })
         );
         countdownTimeline.setCycleCount(1);
         countdownTimeline.play();
     }
-    /*private void resumeGameWithCountdown(Button pauseButton) {
-        Label countdownLabel = new Label("3");
-        countdownLabel.setStyle("-fx-font-size: 50px; -fx-text-fill: white;");
-        countdownLabel.setLayoutX(screenWidth / 2 - 25);
-        countdownLabel.setLayoutY(screenHeight / 2 - 25);
-        root.getChildren().add(countdownLabel);
-
-        Timeline countdownTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), e -> countdownLabel.setText("2")),
-                new KeyFrame(Duration.seconds(2), e -> countdownLabel.setText("1")),
-                new KeyFrame(Duration.seconds(3), e -> {
-                    root.getChildren().remove(countdownLabel);
-                    pauseButton.setDisable(false);
-                    timeline.play();
-                })
-        );
-        countdownTimeline.setCycleCount(1);
-        countdownTimeline.play();
-    }*/
 
     private void goToMainMenu() {
         timeline.stop();
-
-        soundManager.stopBackgroundSound();
+        levelParent.setGamePaused(true);
         MainMenuPage mainMenuPage = new MainMenuPage();
 
         StackPane root = new StackPane();

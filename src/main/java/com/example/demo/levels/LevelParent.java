@@ -55,6 +55,8 @@ public abstract class LevelParent {
 	private final InputHandler inputHandler; // New
 	private final LevelEndScreenFactory endScreenFactory;
 
+	private boolean gamePaused;
+
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage primaryStage) {
 		this.endScreenFactory = new LevelEndScreenFactory();
 		this.primaryStage = primaryStage;
@@ -73,10 +75,11 @@ public abstract class LevelParent {
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
+		this.gamePaused = false;
 		initializeTimeline();
 		friendlyUnits.add(user);
 
-		this.pauseManager = new PauseManager(root, primaryStage, timeline, screenWidth, screenHeight, background);
+		this.pauseManager = new PauseManager(root, primaryStage, timeline, screenWidth, screenHeight, background, this);
 		this.collisionManager = new CollisionManager(root, user, enemyUnits, friendlyUnits, userProjectiles, enemyProjectiles);
 
 		// Create and initialize InputHandler
@@ -114,15 +117,25 @@ public abstract class LevelParent {
 	//}
 
 	protected void updateScene() {
-		spawnEnemyUnits();
-		updateActors();
-		generateEnemyFire();
-		updateNumberOfEnemies();
-		collisionManager.handleCollisions();
-		removeAllDestroyedActors();
-		updateKillCount();
-		updateLevelView();
-		checkIfGameOver();
+		if (!gamePaused) {
+			spawnEnemyUnits();
+			updateActors();
+			generateEnemyFire();
+			updateNumberOfEnemies();
+			collisionManager.handleCollisions();
+			removeAllDestroyedActors();
+			updateKillCount();
+			updateLevelView();
+			checkIfGameOver();
+		}
+	}
+
+	public void setGamePaused(boolean paused) {
+		this.gamePaused = paused;
+	}
+
+	public boolean isGamePaused() {
+		return gamePaused;
 	}
 
 	// Add an accessor for levelView

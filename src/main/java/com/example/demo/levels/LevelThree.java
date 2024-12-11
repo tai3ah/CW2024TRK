@@ -6,48 +6,53 @@ import com.example.demo.ui.LevelViewLevelThree;
 import com.example.demo.factories.FinalBossFactory;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class LevelThree extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background4.jpg";
+    private static final String TIME_POWERUP_IMAGE = "/com/example/demo/images/timePowerUp.png";
     private static final int PLAYER_INITIAL_HEALTH = 5;
     private static final String NEXT_LEVEL = "LevelFour";
-    private static final int LEVEL_TIME_LIMIT = 25; // Time limit in seconds
+    private static final int LEVEL_TIME_LIMIT = 25;
+    private static final int TIME_POWERUP_BONUS = 5;
+    private static final int TIME_POWERUP_LIFETIME = 7000;
+    private static final double TIME_POWERUP_SPAWN_PROBABILITY = 0.01;
 
     private FinalBoss finalBoss;
     private static final FinalBossFactory finalBossFactory = new FinalBossFactory();
     private LevelViewLevelThree levelView;
 
-    private Timeline levelTimer;
     private int remainingTime;
-    private final Text timerDisplay = new Text();
+    private final Timeline timerTimeline;
+    private final List<ImageView> timePowerUps = new ArrayList<>();
+    private final List<Long> timePowerUpSpawnTimes = new ArrayList<>();
 
     public LevelThree(double screenHeight, double screenWidth, Stage primaryStage) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
-        finalBoss = finalBossFactory.createEnemy(1000, 400); // Create FinalBoss
+        finalBoss = finalBossFactory.createEnemy(1000, 400);
         remainingTime = LEVEL_TIME_LIMIT;
 
-    }
-
-
-
-    private void startLevelTimer() {
-        levelTimer = new Timeline(
-                new KeyFrame(Duration.seconds(1), event -> {
-                    remainingTime--;
-                    updateTimerDisplay();
-
-                    if (remainingTime <= 0) {
-                        loseGame(); // Timer runs out, player loses
-                        levelTimer.stop();
-                    }
-                })
-        );
-        levelTimer.setCycleCount(Timeline.INDEFINITE);
-        levelTimer.play();
+        timerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            if (!isGamePaused()) {
+                remainingTime--;
+                updateTimerDisplay();
+                removeExpiredTimePowerUps();
+                checkTimePowerUpCollisions();
+                if (remainingTime <= 0) {
+                    stopTimer();
+                    loseGame();
+                }
+            }
+        }));
+        timerTimeline.setCycleCount(Timeline.INDEFINITE);
     }
 
     private void updateTimerDisplay() {
@@ -56,6 +61,9 @@ public class LevelThree extends LevelParent {
         }
     }
 
+    private void stopTimer() {
+        timerTimeline.stop();
+    }
 
     @Override
     protected void initializeFriendlyUnits() {
@@ -65,11 +73,11 @@ public class LevelThree extends LevelParent {
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
-            loseGame(); // Player dies
-            levelTimer.stop();
+            stopTimer();
+            loseGame();
         } else if (finalBoss.isDestroyed()) {
-            winGame(); // Player wins
-            levelTimer.stop();
+            stopTimer();
+            winGame();
         }
     }
 
@@ -85,15 +93,16 @@ public class LevelThree extends LevelParent {
         if (getCurrentNumberOfEnemies() == 0) {
             addEnemyUnit(finalBoss);
         }
+        spawnTimePowerUp();
     }
 
     @Override
     protected LevelViewLevelOne instantiateLevelView() {
         if (finalBoss == null) {
-            finalBoss = finalBossFactory.createEnemy(1000, 400); // Ensure FinalBoss is created
+            finalBoss = finalBossFactory.createEnemy(1000, 400);
         }
         levelView = new LevelViewLevelThree(getRoot(), PLAYER_INITIAL_HEALTH, finalBoss);
-        finalBoss.setLevelView(levelView); // Sync level view with FinalBoss for health updates
+        finalBoss.setLevelView(levelView);
         return levelView;
     }
 
@@ -113,6 +122,60 @@ public class LevelThree extends LevelParent {
     @Override
     public void startGame() {
         super.startGame();
-        startLevelTimer(); // Start the timer when the level begins
+        timerTimeline.play();
+    }
+
+    private void spawnTimePowerUp() {
+        if (timePowerUps.size() >= 2 || Math.random() > TIME_POWERUP_SPAWN_PROBABILITY) {
+            return;
+        }
+        double xPosition = Math.random() * getScreenWidth();
+        double yPosition = Math.random() * getScreenHeight();
+
+        ImageView timePowerUp = new ImageView(new Image(getClass().getResource(TIME_POWERUP_IMAGE).toExternalForm()));
+        timePowerUp.setFitHeight(40);
+        timePowerUp.setPreserveRatio(true);
+        timePowerUp.setX(xPosition);
+        timePowerUp.setY(yPosition);
+
+        timePowerUps.add(timePowerUp);
+        timePowerUpSpawnTimes.add(System.currentTimeMillis());
+        getRoot().getChildren().add(timePowerUp);
+    }
+
+    private void checkTimePowerUpCollisions() {
+        Iterator<ImageView> powerUpIterator = timePowerUps.iterator();
+        Iterator<Long> timeIterator = timePowerUpSpawnTimes.iterator();
+
+        while (powerUpIterator.hasNext() && timeIterator.hasNext()) {
+            ImageView powerUp = powerUpIterator.next();
+            Long spawnTime = timeIterator.next();
+
+            if (powerUp.getBoundsInParent().intersects(getUser().getBoundsInParent())) {
+                remainingTime += TIME_POWERUP_BONUS;
+                updateTimerDisplay();
+
+                getRoot().getChildren().remove(powerUp);
+                powerUpIterator.remove();
+                timeIterator.remove();
+            }
+        }
+    }
+
+    private void removeExpiredTimePowerUps() {
+        long currentTime = System.currentTimeMillis();
+        Iterator<ImageView> powerUpIterator = timePowerUps.iterator();
+        Iterator<Long> timeIterator = timePowerUpSpawnTimes.iterator();
+
+        while (powerUpIterator.hasNext() && timeIterator.hasNext()) {
+            ImageView powerUp = powerUpIterator.next();
+            Long spawnTime = timeIterator.next();
+
+            if (currentTime - spawnTime > TIME_POWERUP_LIFETIME) {
+                getRoot().getChildren().remove(powerUp);
+                powerUpIterator.remove();
+                timeIterator.remove();
+            }
+        }
     }
 }
