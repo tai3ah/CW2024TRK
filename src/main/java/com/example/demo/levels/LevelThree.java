@@ -8,6 +8,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -54,6 +58,36 @@ public class LevelThree extends LevelParent {
         }));
         timerTimeline.setCycleCount(Timeline.INDEFINITE);
     }
+
+    private void showIntroScreen() {
+        StackPane introOverlay = new StackPane();
+        introOverlay.setPrefSize(getScreenWidth(), getScreenHeight());
+        introOverlay.setStyle("-fx-background-color: black;");
+
+        Text introText = new Text(
+                "KILL THE FINAL BOSS BEFORE YOUR TIME IS UP TO BEAT LEVEL THREE!\n\n" +
+                        "WARNING: THE FINAL BOSS IS FASTER AND MOVES IN ALL DIRECTIONS!\n\n" +
+                        "HINT: COLLECT THE TIME POWER-UPS THAT APPEAR ON THE SCREEN TO INCREASE TIME BY 5 SECONDS!"
+        );
+        introText.setFill(Color.WHITE);
+        introText.setFont(Font.font("Arial", 25));
+        introText.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        introOverlay.getChildren().add(introText);
+
+
+        getRoot().getChildren().add(introOverlay);
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(7), e -> {
+                    getRoot().getChildren().remove(introOverlay);
+                    super.startGame();
+                    timerTimeline.play();
+                })
+        );
+        timeline.setCycleCount(1);
+        timeline.play();
+    }
+
 
     private void updateTimerDisplay() {
         if (getLevelView() instanceof LevelViewLevelThree) {
@@ -121,8 +155,9 @@ public class LevelThree extends LevelParent {
 
     @Override
     public void startGame() {
-        super.startGame();
-        timerTimeline.play();
+       // super.startGame();
+        //timerTimeline.play();
+        showIntroScreen();
     }
 
     private void spawnTimePowerUp() {
