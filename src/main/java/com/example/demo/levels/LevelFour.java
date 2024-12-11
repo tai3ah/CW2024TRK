@@ -12,6 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -45,6 +48,36 @@ public class LevelFour extends LevelParent {
         initializeDrone();
         startHeartSpawnTimer();
         startGameLoop();
+    }
+
+    @Override
+    public void startGame() {
+        showIntroScreen();
+    }
+
+    private void showIntroScreen() {
+        StackPane introOverlay = new StackPane();
+        introOverlay.setPrefSize(getScreenWidth(), getScreenHeight());
+        introOverlay.setStyle("-fx-background-color: black;");
+
+        Text introText = new Text(
+                "KILL 20 ENEMY PLANES AND THE DRONE TO WIN LEVEL FOUR!\n\n" +
+                        "WARNING: A NEW DRONE WILL APPEAR 10 SECONDS AFTER YOU KILL THE FIRST DRONE, \nIF YOU HAVEN'T REACHED THE KILL TARGET!\n\n" +
+                        "HINT: COLLECT HEARTS THAT APPEAR ON THE SCREEN TO GAIN EXTRA LIVES!");
+        introText.setFill(Color.WHITE);
+        introText.setFont(Font.font("Arial", 40));
+        introOverlay.getChildren().add(introText);
+
+        getRoot().getChildren().add(introOverlay);
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(5), e -> {
+                    getRoot().getChildren().remove(introOverlay);
+                    super.startGame();
+                })
+        );
+        timeline.setCycleCount(1);
+        timeline.play();
     }
 
     private void initializeDrone() {
