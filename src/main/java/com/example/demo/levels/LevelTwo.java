@@ -4,7 +4,14 @@ import com.example.demo.actors.Boss;
 import com.example.demo.ui.LevelViewLevelOne;
 import com.example.demo.ui.LevelViewLevelTwo;
 import com.example.demo.factories.BossPlaneFactory;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class LevelTwo extends LevelParent {
 
@@ -17,6 +24,33 @@ public class LevelTwo extends LevelParent {
 	public LevelTwo(double screenHeight, double screenWidth, Stage primaryStage) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
 		boss = bossFactory.createEnemy(1000, 400); // No typecasting needed
+	}
+
+	@Override
+	public void startGame() {
+		showIntroScreen();
+	}
+
+	private void showIntroScreen() {
+		StackPane introOverlay = new StackPane();
+		introOverlay.setPrefSize(getScreenWidth(), getScreenHeight());
+		introOverlay.setStyle("-fx-background-color: black;");
+
+		Text introText = new Text("SHOOT THE BOSS TO REDUCE ITS HEALTH TO ZERO AND WIN LEVEL TWO!");
+		introText.setFill(Color.WHITE);
+		introText.setFont(Font.font("Arial", 40));
+		introOverlay.getChildren().add(introText);
+
+		getRoot().getChildren().add(introOverlay);
+
+		Timeline timeline = new Timeline(
+				new KeyFrame(Duration.seconds(5), e -> {
+					getRoot().getChildren().remove(introOverlay);
+					super.startGame();
+				})
+		);
+		timeline.setCycleCount(1);
+		timeline.play();
 	}
 
 
