@@ -4,23 +4,58 @@ import com.example.demo.actors.FinalBoss;
 import com.example.demo.ui.LevelViewLevelOne;
 import com.example.demo.ui.LevelViewLevelThree;
 import com.example.demo.factories.FinalBossFactory;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import javafx.scene.text.Text;
 
 public class LevelThree extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background4.jpg";
     private static final int PLAYER_INITIAL_HEALTH = 5;
-
-
     private static final String NEXT_LEVEL = "LevelFour";
+    private static final int LEVEL_TIME_LIMIT = 25; // Time limit in seconds
+
     private FinalBoss finalBoss;
     private static final FinalBossFactory finalBossFactory = new FinalBossFactory();
     private LevelViewLevelThree levelView;
 
+    private Timeline levelTimer;
+    private int remainingTime;
+    private final Text timerDisplay = new Text();
+
     public LevelThree(double screenHeight, double screenWidth, Stage primaryStage) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
         finalBoss = finalBossFactory.createEnemy(1000, 400); // Create FinalBoss
+        remainingTime = LEVEL_TIME_LIMIT;
+
     }
+
+
+
+    private void startLevelTimer() {
+        levelTimer = new Timeline(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    remainingTime--;
+                    updateTimerDisplay();
+
+                    if (remainingTime <= 0) {
+                        loseGame(); // Timer runs out, player loses
+                        levelTimer.stop();
+                    }
+                })
+        );
+        levelTimer.setCycleCount(Timeline.INDEFINITE);
+        levelTimer.play();
+    }
+
+    private void updateTimerDisplay() {
+        if (getLevelView() instanceof LevelViewLevelThree) {
+            ((LevelViewLevelThree) getLevelView()).updateTimerDisplay(remainingTime);
+        }
+    }
+
 
     @Override
     protected void initializeFriendlyUnits() {
@@ -30,9 +65,11 @@ public class LevelThree extends LevelParent {
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
-            loseGame();
+            loseGame(); // Player dies
+            levelTimer.stop();
         } else if (finalBoss.isDestroyed()) {
-            winGame();
+            winGame(); // Player wins
+            levelTimer.stop();
         }
     }
 
@@ -42,7 +79,6 @@ public class LevelThree extends LevelParent {
         getPrimaryStage().setScene(nextLevel.initializeScene());
         nextLevel.startGame();
     }
-
 
     @Override
     protected void spawnEnemyUnits() {
@@ -72,5 +108,11 @@ public class LevelThree extends LevelParent {
                 }
             });
         }
+    }
+
+    @Override
+    public void startGame() {
+        super.startGame();
+        startLevelTimer(); // Start the timer when the level begins
     }
 }
