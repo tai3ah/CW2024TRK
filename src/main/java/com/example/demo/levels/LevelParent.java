@@ -8,6 +8,7 @@ import com.example.demo.managers.CollisionManager;
 import com.example.demo.managers.InputHandler;
 import com.example.demo.managers.PauseManager;
 import com.example.demo.managers.SoundManager;
+import com.example.demo.managers.LoginManager;
 import com.example.demo.ui.LevelViewLevelOne;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -38,6 +39,9 @@ public abstract class LevelParent {
 	private final UserPlane user;
 	private final Scene scene;
 	private final ImageView background;
+
+	private final LoginManager loginManager = new LoginManager(); // Declare in class
+	private String loggedInUser; // Track current user if logged in
 
 	private final List<GameEntity> friendlyUnits;
 	private final List<GameEntity> enemyUnits;
@@ -203,25 +207,45 @@ public abstract class LevelParent {
 		levelView.updateKillCount(user.getNumberOfKills());
 	}
 
-	/*protected void winGame() {
-		timeline.stop();
-		levelView.showWinImage();
-	}
-
-	protected void loseGame() {
-		timeline.stop();
-		levelView.showGameOverImage();
-	}
-
-	 */
-
-	protected void winGame() {
+/*	protected void winGame() {
 		stopGame();
 		soundManager.stopBackgroundSound();
 		soundManager.playWinSound();
 		endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
 		endScreenFactory.showWinLevelScreen(this::restartLevel, this::goToNextLevel);
 	}
+*/
+
+	protected void winGame() {
+		stopGame();
+		soundManager.stopBackgroundSound();
+		soundManager.playWinSound();
+
+		// Save progress
+		int currentLevelNumber = getLevelNumber();
+		if (currentLevelNumber < 4) { // Ensure only levels 1-3 save progress
+			saveProgress(currentLevelNumber + 1); // Unlock the next level
+		}
+
+		endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
+		endScreenFactory.showWinLevelScreen(this::restartLevel, this::goToNextLevel);
+	}
+
+
+
+
+	private int getLevelNumber() {
+		return switch (getClass().getSimpleName()) {
+			case "LevelOne" -> 1;
+			case "LevelTwo" -> 2;
+			case "LevelThree" -> 3;
+			case "LevelFour" -> 4;
+			default -> throw new IllegalArgumentException("Unknown level: " + getClass().getSimpleName());
+		};
+	}
+
+
+
 
 	protected void loseGame() {
 		stopGame();
@@ -291,4 +315,22 @@ public abstract class LevelParent {
 		}
 		soundManager.stopBackgroundSound();
 	}
+
+	public void setLoggedInUser(String username) {
+		this.loggedInUser = username;
+
+		// Optionally, ensure the initial progress is loaded or saved here
+		int progress = loginManager.getUserProgress(username);
+		if (progress == 0) {
+			loginManager.saveProgress(username, 1); // Initialize progress
+		}
+	}
+
+
+	protected void saveProgress(int unlockedLevel) {
+		if (loggedInUser != null && !loggedInUser.isEmpty()) {
+			loginManager.saveProgress(loggedInUser, unlockedLevel);
+		}
+	}
+
 }
