@@ -10,16 +10,27 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+/**
+ * Class for displaying the login page and handling user authentication.
+ */
 public class LoginPage {
 
     private final Stage primaryStage;
     private final LoginManager loginManager;
 
+    /**
+     * Constructs a LoginPage with the specified primary stage.
+     *
+     * @param primaryStage the primary stage of the application
+     */
     public LoginPage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.loginManager = new LoginManager();
     }
 
+    /**
+     * Displays the login screen.
+     */
     public void showLoginScreen() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);

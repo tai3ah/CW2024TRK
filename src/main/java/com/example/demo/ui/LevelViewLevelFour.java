@@ -4,6 +4,9 @@ import com.example.demo.actors.Drone;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+/**
+ * Class for displaying the view for Level Four, extending the functionality of Level One.
+ */
 public class LevelViewLevelFour extends LevelViewLevelOne {
 
     private static final int SCREEN_WIDTH = 1300;
@@ -24,6 +27,13 @@ public class LevelViewLevelFour extends LevelViewLevelOne {
 
     private final Drone drone;
 
+    /**
+     * Constructs a LevelViewLevelFour with the specified root pane, initial hearts, and drone.
+     *
+     * @param root the root pane for the level view
+     * @param initialHearts the initial number of hearts to display
+     * @param drone the drone object to display health for
+     */
     public LevelViewLevelFour(Pane root, int initialHearts, Drone drone) {
         super(root, initialHearts); // Call superclass constructor
         this.drone = drone;
@@ -55,26 +65,35 @@ public class LevelViewLevelFour extends LevelViewLevelOne {
     }
 
     /**
-     * Updates the displayed kill count
+     * Updates the displayed kill count.
+     *
+     * @param killCount the current kill count to display
      */
     public void updateKillCount(int killCount) {
         killCountText.setText("Kill Count: " + killCount);
     }
 
     /**
-     * Updates the displayed drone health
+     * Updates the displayed drone health.
+     *
+     * @param currentHealth the current health of the drone to display
      */
     public void updateDroneHealth(int currentHealth) {
         droneHealthText.setText("Drone Health: " + currentHealth);
     }
 
     /**
-     * Updates the heart display
+     * Adds a heart to the heart display.
      */
     public void addHeart() {
         heartDisplay.addHeart();
     }
 
+    /**
+     * Updates the heart display with the specified number of hearts.
+     *
+     * @param currentHearts the current number of hearts to display
+     */
     public void updateHearts(int currentHearts) {
         heartDisplay.updateHearts(currentHearts);
     }

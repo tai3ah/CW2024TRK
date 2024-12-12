@@ -11,12 +11,20 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Class for displaying the main menu page of the application.
+ */
 public class MainMenuPage {
 
     private static final String BACKGROUND_IMAGE = "/com/example/demo/images/mainMenuBG.png";
     private final PlayButtonFactory playButtonFactory = new PlayButtonFactory();
     private final QuitButtonFactory quitButtonFactory = new QuitButtonFactory();
 
+    /**
+     * Starts the main menu page.
+     *
+     * @param primaryStage the primary stage of the application
+     */
     public void start(Stage primaryStage) {
         // Load background image
         ImageView background = loadBackground();
@@ -59,6 +67,11 @@ public class MainMenuPage {
         primaryStage.show();
     }
 
+    /**
+     * Loads the background image for the main menu.
+     *
+     * @return the ImageView containing the background image, or null if the image could not be loaded
+     */
     private ImageView loadBackground() {
         try {
             ImageView background = new ImageView(new Image(getClass().getResource(BACKGROUND_IMAGE).toExternalForm()));

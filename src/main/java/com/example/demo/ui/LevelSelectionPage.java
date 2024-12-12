@@ -12,6 +12,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Class for creating and managing the level selection page in the application.
+ */
 public class LevelSelectionPage {
 
     private final Stage primaryStage;
@@ -19,6 +22,13 @@ public class LevelSelectionPage {
     private final String username;
     private final int unlockedLevel;
 
+    /**
+     * Constructs a LevelSelectionPage with the specified primary stage, login manager, and username.
+     *
+     * @param primaryStage the primary stage of the application
+     * @param loginManager the login manager to handle user authentication and progress
+     * @param username the username of the logged-in user
+     */
     public LevelSelectionPage(Stage primaryStage, LoginManager loginManager, String username) {
         this.primaryStage = primaryStage;
         this.loginManager = loginManager;
@@ -26,6 +36,11 @@ public class LevelSelectionPage {
         this.unlockedLevel = loginManager.getUserProgress(username);
     }
 
+    /**
+     * Creates the scene for the level selection page.
+     *
+     * @return the created Scene for the level selection page
+     */
     public Scene createScene() {
         StackPane root = new StackPane();
 
@@ -68,6 +83,11 @@ public class LevelSelectionPage {
         return scene;
     }
 
+    /**
+     * Launches the specified level.
+     *
+     * @param levelName the name of the level to launch
+     */
     private void launchLevel(String levelName) {
         LevelParent selectedLevel = LevelBuilder.createLevel(levelName, getPrimaryStage().getHeight(), getPrimaryStage().getWidth(), primaryStage);
         selectedLevel.setLoggedInUser(username);
@@ -75,6 +95,12 @@ public class LevelSelectionPage {
         selectedLevel.startGame();
     }
 
+    /**
+     * Converts a level number to its corresponding name.
+     *
+     * @param levelNumber the level number to convert
+     * @return the name of the level
+     */
     private String convertNumberToName(int levelNumber) {
         return switch (levelNumber) {
             case 1 -> "One";
@@ -85,6 +111,11 @@ public class LevelSelectionPage {
         };
     }
 
+    /**
+     * Returns the primary stage of the application.
+     *
+     * @return the primary stage
+     */
     private Stage getPrimaryStage() {
         return primaryStage;
     }

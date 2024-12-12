@@ -3,19 +3,17 @@ package com.example.demo.ui;
 import javafx.scene.text.Text;
 import javafx.scene.layout.Pane;
 
+/**
+ * Class for displaying the view for Level One, including heart display, win image, game over image, and kill count.
+ */
 public class LevelViewLevelOne {
 
 	private static final double HEART_DISPLAY_X_POSITION = 5;
 	private static final double HEART_DISPLAY_Y_POSITION = 25;
 	private static final int WIN_IMAGE_X_POSITION = 355;
 	private static final int WIN_IMAGE_Y_POSITION = 175;
-	//private static final int LOSS_SCREEN_X_POSITION = -160;
-	//private static final int LOSS_SCREEN_Y_POSITION = -375;
 
 	private static final double KILL_COUNT_MARGIN = 20; // Margin from the edge
-	//private static final double KILL_COUNT_X_POSITION = 10;
-	//private static final double KILL_COUNT_Y_POSITION = 60;
-	// Fixed screen dimensions
 	private static final int SCREEN_WIDTH = 1300;
 	private static final int SCREEN_HEIGHT = 750;
 
@@ -25,11 +23,16 @@ public class LevelViewLevelOne {
 	final HeartDisplay heartDisplay;
 	private final Text killCountText; // Kill count display
 
+	/**
+	 * Constructs a LevelViewLevelOne with the specified root pane and initial number of hearts to display.
+	 *
+	 * @param root the root pane for the level view
+	 * @param heartsToDisplay the initial number of hearts to display
+	 */
 	public LevelViewLevelOne(Pane root, int heartsToDisplay) {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_DISPLAY_X_POSITION, HEART_DISPLAY_Y_POSITION, heartsToDisplay);
 		this.winImage = new WinImage(WIN_IMAGE_X_POSITION, WIN_IMAGE_Y_POSITION);
-		//this.gameOverImage = new GameOverImage(LOSS_SCREEN_X_POSITION, LOSS_SCREEN_Y_POSITION);
 		this.gameOverImage = new GameOverImage();
 
 		// Initialize kill count display
@@ -38,10 +41,11 @@ public class LevelViewLevelOne {
 		root.getChildren().add(killCountText); // Add kill count text to the root
 
 		updateKillCountPosition();
-
 	}
 
-	//added
+	/**
+	 * Updates the position of the kill count text to ensure it stays within the screen.
+	 */
 	private void updateKillCountPosition() {
 		// First set the text to make sure the bounds are updated
 		killCountText.applyCss(); // Apply CSS to make sure we get an accurate size
@@ -60,10 +64,16 @@ public class LevelViewLevelOne {
 		killCountText.setY(KILL_COUNT_MARGIN); // A fixed margin from the top
 	}
 
+	/**
+	 * Displays the heart display on the screen.
+	 */
 	public void showHeartDisplay() {
 		root.getChildren().add(heartDisplay.getContainer());
 	}
 
+	/**
+	 * Displays the win image on the screen.
+	 */
 	public void showWinImage() {
 		if (!root.getChildren().contains(winImage)) { // Check if winImage is already added
 			root.getChildren().add(winImage);        // Add only if it's not already present
@@ -71,6 +81,9 @@ public class LevelViewLevelOne {
 		winImage.showWinImage();
 	}
 
+	/**
+	 * Displays the game over image on the screen.
+	 */
 	public void showGameOverImage() {
 		if (!root.getChildren().contains(gameOverImage)) { // Ensure no duplicate addition
 			root.getChildren().add(gameOverImage);
@@ -78,7 +91,11 @@ public class LevelViewLevelOne {
 		gameOverImage.toFront(); // Bring the game over image to the front
 	}
 
-
+	/**
+	 * Removes hearts from the heart display to match the specified number of remaining hearts.
+	 *
+	 * @param heartsRemaining the number of hearts remaining
+	 */
 	public void removeHearts(int heartsRemaining) {
 		int currentNumberOfHearts = heartDisplay.getContainer().getChildren().size();
 		for (int i = 0; i < currentNumberOfHearts - heartsRemaining; i++) {
@@ -86,33 +103,42 @@ public class LevelViewLevelOne {
 		}
 	}
 
-
-	/*public void addHearts(int heartsToAdd) {
-		for (int i = 0; i < heartsToAdd; i++) {
-			heartDisplay.addHeart();
-		}
-	}
-*/
+	/**
+	 * Updates the heart display with the specified number of hearts.
+	 *
+	 * @param currentHearts the current number of hearts to display
+	 */
 	public void updateHearts(int currentHearts) {
 		heartDisplay.updateHearts(currentHearts);
 	}
 
+	/**
+	 * Adds hearts to the heart display.
+	 *
+	 * @param heartsToAdd the number of hearts to add
+	 */
 	public void addHearts(int heartsToAdd) {
 		for (int i = 0; i < heartsToAdd; i++) {
 			heartDisplay.addHeart();
 		}
 	}
 
-
-
-	// Method to update the kill count display
+	/**
+	 * Updates the kill count display with the specified kill count.
+	 *
+	 * @param killCount the current kill count to display
+	 */
 	public void updateKillCount(int killCount) {
 		killCountText.setText("Kill Count: " + killCount);
 		killCountText.toFront();
 	}
 
+	/**
+	 * Returns the kill count text.
+	 *
+	 * @return the kill count text
+	 */
 	public Text getKillCountText() {
 		return killCountText;
 	}
-
 }

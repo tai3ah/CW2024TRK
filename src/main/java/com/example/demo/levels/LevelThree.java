@@ -19,26 +19,94 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * The LevelThree class represents the third level of the game.
+ * It handles the initialization, gameplay, and transition to the next level.
+ */
 public class LevelThree extends LevelParent {
 
+    /**
+     * The background image for the level.
+     */
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background4.jpg";
+
+    /**
+     * The image for the time power-up.
+     */
     private static final String TIME_POWERUP_IMAGE = "/com/example/demo/images/timePowerUp.png";
+
+    /**
+     * The initial health of the player.
+     */
     private static final int PLAYER_INITIAL_HEALTH = 5;
+
+    /**
+     * The name of the next level to transition to.
+     */
     private static final String NEXT_LEVEL = "LevelFour";
+
+    /**
+     * The time limit for the level in seconds.
+     */
     private static final int LEVEL_TIME_LIMIT = 25;
+
+    /**
+     * The bonus time added when a time power-up is collected.
+     */
     private static final int TIME_POWERUP_BONUS = 5;
+
+    /**
+     * The lifetime of a time power-up in milliseconds.
+     */
     private static final int TIME_POWERUP_LIFETIME = 7000;
+
+    /**
+     * The probability of spawning a time power-up.
+     */
     private static final double TIME_POWERUP_SPAWN_PROBABILITY = 0.01;
 
+    /**
+     * The final boss for this level.
+     */
     private FinalBoss finalBoss;
+
+    /**
+     * The factory for creating final bosses.
+     */
     private static final FinalBossFactory finalBossFactory = new FinalBossFactory();
+
+    /**
+     * The view for this level.
+     */
     private LevelViewLevelThree levelView;
 
+    /**
+     * The remaining time for the level.
+     */
     private int remainingTime;
+
+    /**
+     * The timeline for the level timer.
+     */
     private final Timeline timerTimeline;
+
+    /**
+     * The list of active time power-ups.
+     */
     private final List<ImageView> timePowerUps = new ArrayList<>();
+
+    /**
+     * The list of spawn times for the active time power-ups.
+     */
     private final List<Long> timePowerUpSpawnTimes = new ArrayList<>();
 
+    /**
+     * Constructs a LevelThree instance with the specified screen dimensions and primary stage.
+     *
+     * @param screenHeight the height of the screen
+     * @param screenWidth  the width of the screen
+     * @param primaryStage the primary stage for the level
+     */
     public LevelThree(double screenHeight, double screenWidth, Stage primaryStage) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
         finalBoss = finalBossFactory.createEnemy(1000, 400);
@@ -59,6 +127,9 @@ public class LevelThree extends LevelParent {
         timerTimeline.setCycleCount(Timeline.INDEFINITE);
     }
 
+    /**
+     * Shows the intro screen with instructions for the level.
+     */
     private void showIntroScreen() {
         StackPane introOverlay = new StackPane();
         introOverlay.setPrefSize(getScreenWidth(), getScreenHeight());
@@ -74,7 +145,6 @@ public class LevelThree extends LevelParent {
         introText.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         introOverlay.getChildren().add(introText);
 
-
         getRoot().getChildren().add(introOverlay);
 
         Timeline timeline = new Timeline(
@@ -88,22 +158,33 @@ public class LevelThree extends LevelParent {
         timeline.play();
     }
 
-
+    /**
+     * Updates the timer display in the level view.
+     */
     private void updateTimerDisplay() {
         if (getLevelView() instanceof LevelViewLevelThree) {
             ((LevelViewLevelThree) getLevelView()).updateTimerDisplay(remainingTime);
         }
     }
 
+    /**
+     * Stops the level timer.
+     */
     private void stopTimer() {
         timerTimeline.stop();
     }
 
+    /**
+     * Initializes friendly units for the level.
+     */
     @Override
     protected void initializeFriendlyUnits() {
         getRoot().getChildren().add(getUser());
     }
 
+    /**
+     * Checks if the game is over by evaluating the player's and final boss's status.
+     */
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
@@ -115,6 +196,9 @@ public class LevelThree extends LevelParent {
         }
     }
 
+    /**
+     * Transitions to the next level.
+     */
     @Override
     protected void goToNextLevel() {
         LevelParent nextLevel = LevelBuilder.createLevel(NEXT_LEVEL, getScreenHeight(), getScreenWidth(), getPrimaryStage());
@@ -122,6 +206,10 @@ public class LevelThree extends LevelParent {
         nextLevel.startGame();
     }
 
+    /**
+     * Spawns enemy units, specifically the final boss, if no enemies are present.
+     * Also spawns time power-ups.
+     */
     @Override
     protected void spawnEnemyUnits() {
         if (getCurrentNumberOfEnemies() == 0) {
@@ -130,6 +218,11 @@ public class LevelThree extends LevelParent {
         spawnTimePowerUp();
     }
 
+    /**
+     * Instantiates the level view for Level Three.
+     *
+     * @return the level view for Level Three
+     */
     @Override
     protected LevelViewLevelOne instantiateLevelView() {
         if (finalBoss == null) {
@@ -140,6 +233,9 @@ public class LevelThree extends LevelParent {
         return levelView;
     }
 
+    /**
+     * Updates the scene, including the final boss's health display.
+     */
     @Override
     protected void updateScene() {
         super.updateScene();
@@ -153,13 +249,17 @@ public class LevelThree extends LevelParent {
         }
     }
 
+    /**
+     * Starts the game by showing the intro screen and starting the timer.
+     */
     @Override
     public void startGame() {
-       // super.startGame();
-        //timerTimeline.play();
         showIntroScreen();
     }
 
+    /**
+     * Spawns a time power-up at a random position on the screen.
+     */
     private void spawnTimePowerUp() {
         if (timePowerUps.size() >= 2 || Math.random() > TIME_POWERUP_SPAWN_PROBABILITY) {
             return;
@@ -178,6 +278,10 @@ public class LevelThree extends LevelParent {
         getRoot().getChildren().add(timePowerUp);
     }
 
+    /**
+     * Checks for collisions between the player and time power-ups.
+     * If a collision is detected, the time power-up is collected and the remaining time is increased.
+     */
     private void checkTimePowerUpCollisions() {
         Iterator<ImageView> powerUpIterator = timePowerUps.iterator();
         Iterator<Long> timeIterator = timePowerUpSpawnTimes.iterator();
@@ -197,6 +301,9 @@ public class LevelThree extends LevelParent {
         }
     }
 
+    /**
+     * Removes expired time power-ups from the screen.
+     */
     private void removeExpiredTimePowerUps() {
         long currentTime = System.currentTimeMillis();
         Iterator<ImageView> powerUpIterator = timePowerUps.iterator();

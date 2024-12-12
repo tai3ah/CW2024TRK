@@ -18,6 +18,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+/**
+ * The PauseManager class handles the functionality for pausing and resuming the game.
+ * It manages the display of the pause menu and the transition back to the main menu.
+ */
 public class PauseManager {
     private final Pane root;
     private final Stage primaryStage;
@@ -31,6 +35,17 @@ public class PauseManager {
     private final ResumeButtonFactory resumeButtonFactory = new ResumeButtonFactory();
     private final QuitLevelButtonFactory quitLevelButtonFactory = new QuitLevelButtonFactory();
 
+    /**
+     * Constructs a PauseManager with the specified parameters.
+     *
+     * @param root the root pane of the game scene
+     * @param primaryStage the primary stage of the application
+     * @param timeline the timeline controlling the game loop
+     * @param screenWidth the width of the screen
+     * @param screenHeight the height of the screen
+     * @param background the background image view
+     * @param levelParent the parent level of the game
+     */
     public PauseManager(Pane root, Stage primaryStage, Timeline timeline, double screenWidth, double screenHeight, ImageView background, LevelParent levelParent) {
         this.root = root;
         this.primaryStage = primaryStage;
@@ -41,6 +56,9 @@ public class PauseManager {
         this.levelParent = levelParent;
     }
 
+    /**
+     * Initializes the pause button and adds it to the game scene.
+     */
     public void initializePauseButton() {
         Button pauseButton = pauseButtonFactory.createButton();
         pauseButton.setLayoutX(screenWidth - 100);
@@ -49,6 +67,11 @@ public class PauseManager {
         root.getChildren().add(pauseButton);
     }
 
+    /**
+     * Displays the pause window with options to resume or quit the game.
+     *
+     * @param pauseButton the pause button that was clicked
+     */
     private void showPauseWindow(Button pauseButton) {
         timeline.pause();
         levelParent.setGamePaused(true);
@@ -77,6 +100,11 @@ public class PauseManager {
         root.getChildren().add(pauseOverlay);
     }
 
+    /**
+     * Resumes the game with a countdown timer.
+     *
+     * @param pauseButton the pause button to re-enable after the countdown
+     */
     private void resumeGameWithCountdown(Button pauseButton) {
         Label countdownLabel = new Label("3");
         countdownLabel.setStyle("-fx-font-size: 50px; -fx-text-fill: white;");
@@ -99,6 +127,9 @@ public class PauseManager {
         countdownTimeline.play();
     }
 
+    /**
+     * Transitions to the main menu.
+     */
     private void goToMainMenu() {
         timeline.stop();
         levelParent.setGamePaused(true);

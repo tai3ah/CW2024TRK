@@ -4,10 +4,18 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * Factory class for creating a quit button with an image.
+ */
 public class QuitButtonFactory extends GameButtonFactory {
 
     private static final String QUIT_BUTTON_IMAGE_PATH = "/com/example/demo/images/quit.png";
 
+    /**
+     * Creates a quit button with an image.
+     *
+     * @return the created quit button
+     */
     @Override
     public Button createButton() {
         ImageView quitImage = new ImageView(new Image(getClass().getResource(QUIT_BUTTON_IMAGE_PATH).toExternalForm()));

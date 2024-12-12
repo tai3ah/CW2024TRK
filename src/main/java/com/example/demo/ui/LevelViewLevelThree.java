@@ -4,6 +4,9 @@ import com.example.demo.actors.FinalBoss;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+/**
+ * Class for displaying the view for Level Three, extending the functionality of Level One.
+ */
 public class LevelViewLevelThree extends LevelViewLevelOne {
 
     private static final int SCREEN_WIDTH = 1300;
@@ -26,6 +29,13 @@ public class LevelViewLevelThree extends LevelViewLevelOne {
     private final Text timerDisplay;
     private final FinalBoss finalBoss;
 
+    /**
+     * Constructs a LevelViewLevelThree with the specified root pane, initial hearts, and final boss.
+     *
+     * @param root the root pane for the level view
+     * @param initialHearts the initial number of hearts to display
+     * @param finalBoss the final boss object to display health for
+     */
     public LevelViewLevelThree(Pane root, int initialHearts, FinalBoss finalBoss) {
         super(root, initialHearts); // Call the superclass constructor
         this.finalBoss = finalBoss;
@@ -55,15 +65,30 @@ public class LevelViewLevelThree extends LevelViewLevelOne {
         root.getChildren().add(timerDisplay);
     }
 
+    /**
+     * Updates the displayed kill count.
+     *
+     * @param killCount the current kill count to display
+     */
     public void updateKillCount(int killCount) {
         killCountText.setText("Kill Count: " + killCount);
     }
 
+    /**
+     * Updates the displayed final boss health.
+     *
+     * @param currentHealth the current health of the final boss to display
+     */
     public void updateFinalBossHealth(int currentHealth) {
         finalBossHealthText.setText("Final Boss Health: " + currentHealth);
         finalBossHealthText.toFront();
     }
 
+    /**
+     * Updates the timer display with the remaining time.
+     *
+     * @param remainingTime the remaining time to display
+     */
     public void updateTimerDisplay(int remainingTime) {
         timerDisplay.setText("Time Left: " + remainingTime + "s");
         timerDisplay.toFront();
