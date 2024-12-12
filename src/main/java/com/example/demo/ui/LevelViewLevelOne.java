@@ -4,7 +4,7 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.Pane;
 
 /**
- * Class for displaying the view for Level One, including heart display, win image, game over image, and kill count.
+ * Class for displaying the view for Level One, including heart display and kill count.
  */
 public class LevelViewLevelOne {
 
@@ -18,10 +18,8 @@ public class LevelViewLevelOne {
 	private static final int SCREEN_HEIGHT = 750;
 
 	private final Pane root;
-	private final WinImage winImage;
-	private final GameOverImage gameOverImage;
 	final HeartDisplay heartDisplay;
-	private final Text killCountText; // Kill count display
+	private final Text killCountText;
 
 	/**
 	 * Constructs a LevelViewLevelOne with the specified root pane and initial number of hearts to display.
@@ -32,8 +30,7 @@ public class LevelViewLevelOne {
 	public LevelViewLevelOne(Pane root, int heartsToDisplay) {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_DISPLAY_X_POSITION, HEART_DISPLAY_Y_POSITION, heartsToDisplay);
-		this.winImage = new WinImage(WIN_IMAGE_X_POSITION, WIN_IMAGE_Y_POSITION);
-		this.gameOverImage = new GameOverImage();
+
 
 		// Initialize kill count display
 		this.killCountText = new Text("Kill Count: 0");
@@ -69,26 +66,6 @@ public class LevelViewLevelOne {
 	 */
 	public void showHeartDisplay() {
 		root.getChildren().add(heartDisplay.getContainer());
-	}
-
-	/**
-	 * Displays the win image on the screen.
-	 */
-	public void showWinImage() {
-		if (!root.getChildren().contains(winImage)) { // Check if winImage is already added
-			root.getChildren().add(winImage);        // Add only if it's not already present
-		}
-		winImage.showWinImage();
-	}
-
-	/**
-	 * Displays the game over image on the screen.
-	 */
-	public void showGameOverImage() {
-		if (!root.getChildren().contains(gameOverImage)) { // Ensure no duplicate addition
-			root.getChildren().add(gameOverImage);
-		}
-		gameOverImage.toFront(); // Bring the game over image to the front
 	}
 
 	/**
