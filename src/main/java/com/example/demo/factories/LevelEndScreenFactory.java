@@ -6,6 +6,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+/**
+ * Factory class for creating and displaying the level end screen.
+ */
 public class LevelEndScreenFactory {
 
     private Pane root;
@@ -16,6 +19,9 @@ public class LevelEndScreenFactory {
 
     private static final String BACKGROUND_IMAGE_PATH = "/com/example/demo/images/levelEnd.png";
 
+    /**
+     * Constructs a LevelEndScreenFactory.
+     */
     public LevelEndScreenFactory() {
         messageText = new Text();
         messageText.setStyle("-fx-font-size: 50px; -fx-fill: white; -fx-font-weight: bold;");
@@ -29,6 +35,13 @@ public class LevelEndScreenFactory {
         backgroundImage.setFitHeight(750);
     }
 
+    /**
+     * Initializes the level end screen with the specified root pane, screen width, and screen height.
+     *
+     * @param root the root pane to which the level end screen components will be added
+     * @param screenWidth the width of the screen
+     * @param screenHeight the height of the screen
+     */
     public void initialize(Pane root, double screenWidth, double screenHeight) {
         this.root = root;
 
@@ -42,6 +55,12 @@ public class LevelEndScreenFactory {
         nextLevelButton.setLayoutY(screenHeight / 2);
     }
 
+    /**
+     * Displays the win level screen and sets the actions for the play again and next level buttons.
+     *
+     * @param onPlayAgain the action to be performed when the play again button is clicked
+     * @param onNextLevel the action to be performed when the next level button is clicked
+     */
     public void showWinLevelScreen(Runnable onPlayAgain, Runnable onNextLevel) {
         if (root == null) {
             throw new IllegalStateException("LevelEndScreenFactory not initialized.");
@@ -58,6 +77,11 @@ public class LevelEndScreenFactory {
         nextLevelButton.setOnAction(e -> onNextLevel.run());
     }
 
+    /**
+     * Displays the lose level screen and sets the action for the play again button.
+     *
+     * @param onPlayAgain the action to be performed when the play again button is clicked
+     */
     public void showLoseLevelScreen(Runnable onPlayAgain) {
         if (root == null) {
             throw new IllegalStateException("LevelEndScreenFactory not initialized.");

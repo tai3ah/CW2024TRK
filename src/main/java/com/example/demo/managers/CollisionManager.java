@@ -1,104 +1,4 @@
-/*package com.example.demo.managers;
-
-import com.example.demo.actors.GameEntity;
-import com.example.demo.actors.Boss;
-import com.example.demo.actors.UserPlane;
-import javafx.scene.layout.Pane;
-
-import java.util.List;
-
-public class CollisionManager {
-    private final Pane root;
-    private final UserPlane user;
-    private final List<GameEntity> friendlyUnits;
-    private final List<GameEntity> enemyUnits;
-    private final List<GameEntity> userProjectiles;
-    private final List<GameEntity> enemyProjectiles;
-
-    public CollisionManager(Pane root, UserPlane user, List<GameEntity> enemyUnits, List<GameEntity> friendlyUnits,
-                            List<GameEntity> userProjectiles, List<GameEntity> enemyProjectiles) {
-        this.root = root;
-        this.user = user;
-        this.enemyUnits = enemyUnits;
-        this.friendlyUnits = friendlyUnits;
-        this.userProjectiles = userProjectiles;
-        this.enemyProjectiles = enemyProjectiles;
-    }
-
-    public void handleCollisions() {
-        handleUserProjectileCollisions();
-        handleEnemyProjectileCollisions();
-        handlePlaneCollisions();
-        handleEnemyPenetration();
-    }
-
-
-
-   private void handleUserProjectileCollisions() {
-        for (GameEntity projectile : userProjectiles)
-            for (GameEntity enemy : enemyUnits) {
-                if (!enemy.isDestroyed() && projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
-                    if (enemy instanceof Boss) {
-                        Boss boss = (Boss) enemy;
-                        if (!boss.isShielded()) {
-                            boss.takeDamage();
-                            System.out.println("Boss hit! Health remaining: " + boss.getHealth());
-
-                        } else {
-                            System.out.println("Projectile hit the shield. Boss is protected.");
-                        }
-                    } else {
-                        enemy.takeDamage();
-                        if (enemy.isDestroyed()) {
-                            user.incrementKillCount(); // Increment kill count when enemy is destroyed
-                            System.out.println("Kill count: " + user.getNumberOfKills());
-                        }
-                    }
-                    projectile.takeDamage();
-                    root.getChildren().remove(projectile);
-                }
-            }
-    }
-
-
-
-    private void handleEnemyProjectileCollisions() {
-        handleCollisions(enemyProjectiles, friendlyUnits);
-    }
-
-    private void handlePlaneCollisions() {
-        handleCollisions(friendlyUnits, enemyUnits);
-    }
-
-    private void handleEnemyPenetration() {
-        for (GameEntity enemy : enemyUnits) {
-            if (enemyHasPenetratedDefenses(enemy)) {
-                enemy.takeDamage();
-                enemy.destroy();
-            }
-        }
-    }
-
-    private void handleCollisions(List<GameEntity> actors1, List<GameEntity> actors2) {
-        for (GameEntity actor : actors2) {
-            for (GameEntity otherActor : actors1) {
-                if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-                    actor.takeDamage();
-                    otherActor.takeDamage();
-                }
-            }
-        }
-    }
-
-    private boolean enemyHasPenetratedDefenses(GameEntity enemy) {
-        return Math.abs(enemy.getTranslateX()) > root.getWidth();
-    }
-}
-
- */
-
 package com.example.demo.managers;
-
 
 import com.example.demo.actors.GameEntity;
 import com.example.demo.actors.Boss;
@@ -108,6 +8,11 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The CollisionManager class handles collision detection and resolution
+ * between various game entities such as user projectiles, enemy projectiles,
+ * friendly units, and enemy units.
+ */
 public class CollisionManager {
     private final Pane root;
     private final UserPlane user;
@@ -116,7 +21,16 @@ public class CollisionManager {
     private final List<GameEntity> userProjectiles;
     private final List<GameEntity> enemyProjectiles;
 
-
+    /**
+     * Constructs a CollisionManager with the specified parameters.
+     *
+     * @param root the root pane of the game scene
+     * @param user the user plane controlled by the player
+     * @param enemyUnits the list of enemy units in the game
+     * @param friendlyUnits the list of friendly units in the game
+     * @param userProjectiles the list of projectiles fired by the user
+     * @param enemyProjectiles the list of projectiles fired by enemies
+     */
     public CollisionManager(Pane root, UserPlane user, List<GameEntity> enemyUnits, List<GameEntity> friendlyUnits,
                             List<GameEntity> userProjectiles, List<GameEntity> enemyProjectiles) {
         this.root = root;
@@ -125,9 +39,11 @@ public class CollisionManager {
         this.friendlyUnits = friendlyUnits;
         this.userProjectiles = userProjectiles;
         this.enemyProjectiles = enemyProjectiles;
-
     }
 
+    /**
+     * Handles all types of collisions in the game.
+     */
     public void handleCollisions() {
         root.layout();
 
@@ -138,6 +54,9 @@ public class CollisionManager {
         handleProjectileCollisions();
     }
 
+    /**
+     * Handles collisions between user projectiles and enemy units.
+     */
     private void handleUserProjectileCollisions() {
         List<GameEntity> projectilesToRemove = new ArrayList<>();
         List<GameEntity> enemiesToRemove = new ArrayList<>();
@@ -173,14 +92,23 @@ public class CollisionManager {
         removeEntities(enemiesToRemove, enemyUnits);
     }
 
+    /**
+     * Handles collisions between enemy projectiles and friendly units.
+     */
     private void handleEnemyProjectileCollisions() {
         handleCollisions(enemyProjectiles, friendlyUnits);
     }
 
+    /**
+     * Handles collisions between friendly units and enemy units.
+     */
     private void handlePlaneCollisions() {
         handleCollisions(friendlyUnits, enemyUnits);
     }
 
+    /**
+     * Handles enemy units that have penetrated the player's defenses.
+     */
     private void handleEnemyPenetration() {
         List<GameEntity> enemiesToRemove = new ArrayList<>();
 
@@ -197,6 +125,9 @@ public class CollisionManager {
         removeEntities(enemiesToRemove, enemyUnits);
     }
 
+    /**
+     * Handles collisions between user projectiles and enemy projectiles.
+     */
     private void handleProjectileCollisions() {
         List<GameEntity> userProjectilesToRemove = new ArrayList<>();
         List<GameEntity> enemyProjectilesToRemove = new ArrayList<>();
@@ -217,6 +148,12 @@ public class CollisionManager {
         removeEntities(enemyProjectilesToRemove, enemyProjectiles);
     }
 
+    /**
+     * Handles collisions between two lists of game entities.
+     *
+     * @param actors1 the first list of game entities
+     * @param actors2 the second list of game entities
+     */
     private void handleCollisions(List<GameEntity> actors1, List<GameEntity> actors2) {
         List<GameEntity> actors1ToRemove = new ArrayList<>();
         List<GameEntity> actors2ToRemove = new ArrayList<>();
@@ -243,11 +180,23 @@ public class CollisionManager {
         removeEntities(actors2ToRemove, actors2);
     }
 
+    /**
+     * Checks if an enemy unit has penetrated the player's defenses.
+     *
+     * @param enemy the enemy unit to check
+     * @return true if the enemy has penetrated the defenses, false otherwise
+     */
     private boolean enemyHasPenetratedDefenses(GameEntity enemy) {
         return Math.abs(enemy.getTranslateX()) > root.getWidth();
     }
 
-    // Helper method to remove entities from both the list and the scene
+    /**
+     * Removes entities from both the list and the scene.
+     *
+     * @param entitiesToRemove the list of entities to remove
+     * @param entities the list of entities to remove from
+     * @param <T> the type of game entity
+     */
     private <T extends GameEntity> void removeEntities(List<T> entitiesToRemove, List<T> entities) {
         for (T entity : entitiesToRemove) {
             entities.remove(entity);

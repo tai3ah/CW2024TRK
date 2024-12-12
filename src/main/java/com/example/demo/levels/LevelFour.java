@@ -22,26 +22,99 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * The LevelFour class represents the fourth level of the game.
+ * It handles the initialization, gameplay, and transition to the next level.
+ */
 public class LevelFour extends LevelParent {
 
+    /**
+     * The background image for the level.
+     */
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background3.png";
+
+    /**
+     * The initial health of the player.
+     */
     private static final int PLAYER_INITIAL_HEALTH = 5;
+
+    /**
+     * The factory for creating drones.
+     */
     private static final DroneFactory droneFactory = new DroneFactory();
+
+    /**
+     * The factory for creating enemy planes.
+     */
     private static final EnemyPlaneFactory enemyFactory = new EnemyPlaneFactory();
+
+    /**
+     * The number of kills required to advance to the next level.
+     */
     private static final int KILLS_TO_ADVANCE = 20;
-    private static final double ENEMY_SPAWN_PROBABILITY = .20;
+
+    /**
+     * The probability of spawning an enemy.
+     */
+    private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
+
+    /**
+     * The total number of enemies to spawn.
+     */
     private static final int TOTAL_ENEMIES = 3;
+
+    /**
+     * The probability of spawning a heart power-up.
+     */
     private static final double HEART_SPAWN_PROBABILITY = 0.002;
+
+    /**
+     * The lifetime of a heart power-up in milliseconds.
+     */
     private static final int HEART_LIFETIME = 7000;
+
+    /**
+     * The delay in seconds before a new drone respawns.
+     */
     private static final int DRONE_RESPAWN_DELAY = 10;
 
+    /**
+     * The drone enemy for this level.
+     */
     private Drone drone;
+
+    /**
+     * The list of active heart power-ups.
+     */
     private final List<ImageView> hearts = new ArrayList<>();
+
+    /**
+     * The list of spawn times for the active heart power-ups.
+     */
     private final List<Long> heartSpawnTimes = new ArrayList<>();
+
+    /**
+     * The view for this level.
+     */
     private LevelViewLevelFour levelView;
+
+    /**
+     * The height of the screen.
+     */
     private final double screenHeight;
+
+    /**
+     * The timeline for respawning the drone.
+     */
     private Timeline droneRespawnTimer;
 
+    /**
+     * Constructs a LevelFour instance with the specified screen dimensions and primary stage.
+     *
+     * @param screenHeight the height of the screen
+     * @param screenWidth  the width of the screen
+     * @param primaryStage the primary stage for the level
+     */
     public LevelFour(double screenHeight, double screenWidth, Stage primaryStage) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, primaryStage);
         this.screenHeight = screenHeight;
@@ -50,11 +123,17 @@ public class LevelFour extends LevelParent {
         startGameLoop();
     }
 
+    /**
+     * Starts the game by showing the intro screen.
+     */
     @Override
     public void startGame() {
         showIntroScreen();
     }
 
+    /**
+     * Shows the intro screen with instructions for the level.
+     */
     private void showIntroScreen() {
         StackPane introOverlay = new StackPane();
         introOverlay.setPrefSize(getScreenWidth(), getScreenHeight());
@@ -80,12 +159,18 @@ public class LevelFour extends LevelParent {
         timeline.play();
     }
 
+    /**
+     * Initializes the drone for the level.
+     */
     private void initializeDrone() {
         if (drone == null) {
             drone = (Drone) droneFactory.createEnemy(0, 0);
         }
     }
 
+    /**
+     * Initializes friendly units for the level.
+     */
     @Override
     protected void initializeFriendlyUnits() {
         getRoot().getChildren().add(getUser());
@@ -93,6 +178,9 @@ public class LevelFour extends LevelParent {
         levelView = new LevelViewLevelFour(getRoot(), PLAYER_INITIAL_HEALTH, drone);
     }
 
+    /**
+     * Checks if the game is over by evaluating the player's and drone's status.
+     */
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
@@ -106,6 +194,9 @@ public class LevelFour extends LevelParent {
         }
     }
 
+    /**
+     * Starts the timer for respawning the drone.
+     */
     private void startDroneRespawnTimer() {
         if (droneRespawnTimer != null && droneRespawnTimer.getStatus() == Animation.Status.RUNNING) {
             return;
@@ -121,12 +212,18 @@ public class LevelFour extends LevelParent {
         droneRespawnTimer.play();
     }
 
+    /**
+     * Respawns the drone and updates its health display.
+     */
     private void respawnDrone() {
         drone = (Drone) droneFactory.createEnemy(0, 0);
         addEnemyUnit(drone);
         levelView.updateDroneHealth(drone.getHealth());
     }
 
+    /**
+     * Transitions to the next level by showing the game completion screen.
+     */
     @Override
     protected void goToNextLevel() {
         GameCompletionScreenFactory completionScreen = new GameCompletionScreenFactory(getRoot(), getScreenWidth(), getScreenHeight());
@@ -143,6 +240,9 @@ public class LevelFour extends LevelParent {
         });
     }
 
+    /**
+     * Spawns enemy units, including the drone and other enemies, based on spawn probabilities.
+     */
     @Override
     protected void spawnEnemyUnits() {
         if (drone != null && getCurrentNumberOfEnemies() == 0) {
@@ -158,6 +258,9 @@ public class LevelFour extends LevelParent {
         }
     }
 
+    /**
+     * Updates the user interface, including the kill count and drone health.
+     */
     protected void updateUI() {
         levelView.updateKillCount(getUser().getNumberOfKills());
         if (drone != null) {
@@ -165,6 +268,11 @@ public class LevelFour extends LevelParent {
         }
     }
 
+    /**
+     * Instantiates the level view for Level Four.
+     *
+     * @return the level view for Level Four
+     */
     @Override
     protected LevelViewLevelOne instantiateLevelView() {
         initializeDrone();
@@ -172,6 +280,9 @@ public class LevelFour extends LevelParent {
         return levelView;
     }
 
+    /**
+     * Starts the timer for spawning heart power-ups.
+     */
     private void startHeartSpawnTimer() {
         AnimationTimer heartTimer = new AnimationTimer() {
             @Override
@@ -184,6 +295,9 @@ public class LevelFour extends LevelParent {
         heartTimer.start();
     }
 
+    /**
+     * Starts the main game loop, which checks for game over conditions, spawns enemies, and updates the UI.
+     */
     private void startGameLoop() {
         AnimationTimer gameLoop = new AnimationTimer() {
             @Override
@@ -196,6 +310,9 @@ public class LevelFour extends LevelParent {
         gameLoop.start();
     }
 
+    /**
+     * Spawns heart power-ups at random positions on the screen based on spawn probability.
+     */
     private void spawnHearts() {
         if (getTimeline() != null && getTimeline().getStatus() != Animation.Status.RUNNING) {
             return;
@@ -217,6 +334,10 @@ public class LevelFour extends LevelParent {
         }
     }
 
+    /**
+     * Checks for collisions between the player and heart power-ups.
+     * If a collision is detected, the player's health is increased and the heart is removed.
+     */
     private void checkHeartCollisions() {
         Iterator<ImageView> heartIterator = hearts.iterator();
         Iterator<Long> timeIterator = heartSpawnTimes.iterator();
@@ -235,6 +356,9 @@ public class LevelFour extends LevelParent {
         }
     }
 
+    /**
+     * Removes expired heart power-ups from the screen.
+     */
     private void removeExpiredHearts() {
         long currentTime = System.currentTimeMillis();
         Iterator<ImageView> heartIterator = hearts.iterator();
@@ -252,7 +376,13 @@ public class LevelFour extends LevelParent {
         }
     }
 
+    /**
+     * Checks if the player has reached the kill target to advance to the next level.
+     *
+     * @return true if the player has reached the kill target, false otherwise
+     */
     private boolean userHasReachedKillTarget() {
         return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
     }
+
 }

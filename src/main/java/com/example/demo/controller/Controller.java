@@ -7,21 +7,49 @@ import javafx.stage.Stage;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.levels.LevelBuilder;
 
+/**
+ * The Controller class manages the game flow, including launching the game,
+ * transitioning between levels, and cleaning up resources.
+ */
 public class Controller {
 
+	/**
+	 * The current level being played.
+	 */
 	private LevelParent currentLevel;
+
+	/**
+	 * The class name of the first level to be loaded.
+	 */
 	private static final String LEVEL_ONE_CLASS_NAME = "LevelOne";
+
+	/**
+	 * The primary stage for displaying the game.
+	 */
 	private final Stage stage;
 
+	/**
+	 * Constructs a Controller with the specified stage.
+	 *
+	 * @param stage the primary stage for displaying the game
+	 */
 	public Controller(Stage stage) {
 		this.stage = stage;
 	}
 
+	/**
+	 * Launches the game by showing the stage and loading the first level.
+	 */
 	public void launchGame() {
 		stage.show();
 		goToLevel(LEVEL_ONE_CLASS_NAME);
 	}
 
+	/**
+	 * Transitions to the specified level.
+	 *
+	 * @param levelName the name of the level to load
+	 */
 	private void goToLevel(String levelName) {
 		try {
 			// Stop any ongoing game activity from the current level
@@ -51,6 +79,9 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * Cleans up resources from the current level.
+	 */
 	private void cleanupCurrentLevel() {
 		if (currentLevel != null) {
 			// Stop the timeline to stop any ongoing animations

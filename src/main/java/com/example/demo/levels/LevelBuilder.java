@@ -1,11 +1,23 @@
 package com.example.demo.levels;
 
-import com.example.demo.ui.MainMenuPage;
 import javafx.stage.Stage;
 
+/**
+ * The LevelBuilder class is responsible for creating instances of different game levels.
+ */
 public class LevelBuilder {
 
-    public static LevelParent createLevel(String levelName, double height, double width, Stage primaryStage){
+    /**
+     * Creates a level based on the specified level name.
+     *
+     * @param levelName the name of the level to create
+     * @param height the height of the level
+     * @param width the width of the level
+     * @param primaryStage the primary stage for the level
+     * @return an instance of the specified level
+     * @throws IllegalArgumentException if the level name is invalid
+     */
+    public static LevelParent createLevel(String levelName, double height, double width, Stage primaryStage) {
         return switch (levelName) {
             case "LevelOne" -> new LevelOne(height, width, primaryStage);
             case "LevelTwo" -> new LevelTwo(height, width, primaryStage);
