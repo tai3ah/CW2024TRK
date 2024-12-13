@@ -21,6 +21,11 @@ public class FinalBoss extends FighterPlane {
     private static final int HEALTH = 20;
     private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
 
+    private static final double X_LEFT_BOUND = 0;
+    private static final double X_RIGHT_BOUND = 1250;
+    private static final double Y_UPPER_BOUND = 0;
+    private static final double Y_LOWER_BOUND = 650;
+
     private final List<int[]> movePattern;
     private int consecutiveMovesInSameDirection;
     private int indexOfCurrentMove;
@@ -64,10 +69,10 @@ public class FinalBoss extends FighterPlane {
         double currentX = getLayoutX() + getTranslateX();
         double currentY = getLayoutY() + getTranslateY();
 
-        if (currentX < 0 || currentX > 1300 - IMAGE_HEIGHT) {
+        if (currentX < X_LEFT_BOUND || currentX > X_RIGHT_BOUND) {
             setTranslateX(initialX); // Revert horizontal movement if out of bounds
         }
-        if (currentY < 0 || currentY > 750 - IMAGE_HEIGHT) {
+        if (currentY < Y_UPPER_BOUND || currentY > Y_LOWER_BOUND) {
             setTranslateY(initialY); // Revert vertical movement if out of bounds
         }
     }
