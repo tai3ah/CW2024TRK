@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
  */
 public class ShieldImage extends ImageView {
 
-	private static final int SHIELD_SIZE = 400;
+	private static final int SHIELD_SIZE = 200;
 
 	/**
 	 * Constructs a ShieldImage with the specified position.

@@ -141,7 +141,6 @@ public class LevelTwo extends LevelParent {
 			boss = bossFactory.createEnemy(1000, 400); // Ensure boss is instantiated
 		}
 		LevelViewLevelTwo levelView = new LevelViewLevelTwo(getRoot(), PLAYER_INITIAL_HEALTH, boss);
-		levelView.showShield();
 		boss.setLevelView(levelView); // Set the level view in boss to update health display
 		return levelView;
 	}

@@ -17,7 +17,6 @@ public class LevelViewLevelTwo extends LevelViewLevelOne {
 	private static final double BOSS_HEALTH_Y_POSITION = 60;
 
 	private final Pane root;
-	private final ShieldImage shieldImage;
 	private final Text bossHealthText;
 
 	/**
@@ -31,20 +30,11 @@ public class LevelViewLevelTwo extends LevelViewLevelOne {
 		super(root, heartsToDisplay);
 		this.boss = boss;
 		this.root = root;
-		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
 		this.bossHealthText = new Text("Boss Health: " + boss.getHealth());
 		bossHealthText.setStyle("-fx-font-size: 20px; -fx-fill: red; -fx-font-weight: bold;");
 		root.getChildren().remove(getKillCountText());
 		root.getChildren().add(bossHealthText);
-		addImagesToRoot();
 		addHealthTextToRoot();
-	}
-
-	/**
-	 * Adds images to the root pane.
-	 */
-	private void addImagesToRoot() {
-		root.getChildren().addAll(shieldImage);
 	}
 
 	/**
@@ -53,20 +43,6 @@ public class LevelViewLevelTwo extends LevelViewLevelOne {
 	private void addHealthTextToRoot() {
 		bossHealthText.setX(BOSS_HEALTH_X_POSITION);
 		bossHealthText.setY(BOSS_HEALTH_Y_POSITION);
-	}
-
-	/**
-	 * Shows the shield image.
-	 */
-	public void showShield() {
-		shieldImage.showShield();
-	}
-
-	/**
-	 * Hides the shield image.
-	 */
-	public void hideShield() {
-		shieldImage.hideShield();
 	}
 
 	/**
