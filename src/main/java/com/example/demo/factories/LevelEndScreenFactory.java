@@ -15,6 +15,10 @@ import javafx.stage.Stage;
  */
 public class LevelEndScreenFactory {
 
+    private final PlayAgainButtonFactory playAgainButtonFactory = new PlayAgainButtonFactory();
+    private final NextLevelButtonFactory nextLevelButtonFactory = new NextLevelButtonFactory();
+    private final MainMenuButtonFactory mainMenuButtonFactory = new MainMenuButtonFactory();
+
     private Pane root;
     private final Text messageText;
     private final Button playAgainButton;
@@ -31,11 +35,10 @@ public class LevelEndScreenFactory {
         messageText = new Text();
         messageText.setStyle("-fx-font-size: 50px; -fx-fill: white; -fx-font-weight: bold;");
 
-        playAgainButton = new Button("Play Again");
-        nextLevelButton = new Button("Next Level");
-        backToMainMenuButton = new Button("Main Menu");
+        playAgainButton = playAgainButtonFactory.createButton();
+        nextLevelButton = nextLevelButtonFactory.createButton();
+        backToMainMenuButton = mainMenuButtonFactory.createButton();
 
-        // Load background image
         backgroundImage = new ImageView(new Image(getClass().getResource(BACKGROUND_IMAGE_PATH).toExternalForm()));
         backgroundImage.setFitWidth(1300);
         backgroundImage.setFitHeight(750);
@@ -52,16 +55,16 @@ public class LevelEndScreenFactory {
         this.root = root;
 
         messageText.setX(screenWidth / 2 - 150);
-        messageText.setY(screenHeight / 2 - 100);
+        messageText.setY(screenHeight / 2 - 200);
 
-        playAgainButton.setLayoutX(screenWidth / 2 - 120);
+        playAgainButton.setLayoutX(screenWidth / 2 - 300);
         playAgainButton.setLayoutY(screenHeight / 2);
 
-        nextLevelButton.setLayoutX(screenWidth / 2 + 20);
+        nextLevelButton.setLayoutX(screenWidth / 2 + 100);
         nextLevelButton.setLayoutY(screenHeight / 2);
 
-        backToMainMenuButton.setLayoutX(screenWidth / 2 - 50);
-        backToMainMenuButton.setLayoutY(screenHeight / 2 + 80);
+        backToMainMenuButton.setLayoutX(screenWidth / 2 - 300);
+        backToMainMenuButton.setLayoutY(screenHeight / 2 - 80);
     }
 
     /**

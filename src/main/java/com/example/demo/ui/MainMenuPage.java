@@ -1,5 +1,6 @@
 package com.example.demo.ui;
 
+import com.example.demo.factories.LoginButtonFactory;
 import com.example.demo.factories.PlayButtonFactory;
 import com.example.demo.factories.QuitButtonFactory;
 import javafx.geometry.Pos;
@@ -19,7 +20,7 @@ public class MainMenuPage {
     private static final String BACKGROUND_IMAGE = "/com/example/demo/images/mainMenuBG.png";
     private final PlayButtonFactory playButtonFactory = new PlayButtonFactory();
     private final QuitButtonFactory quitButtonFactory = new QuitButtonFactory();
-
+    private final LoginButtonFactory loginButtonFactory = new LoginButtonFactory();
     /**
      * Starts the main menu page.
      *
@@ -37,10 +38,9 @@ public class MainMenuPage {
         });
 
         // Create Login and Play button
-        Button loginButton = new Button("Login and Play");
+        Button loginButton = loginButtonFactory.createButton();
+
         loginButton.setOnAction(event -> {
-            //LoginPage loginPage = new LoginPage(primaryStage);
-           // loginPage.showLoginScreen();
 
             LoginPage loginPage = new LoginPage(primaryStage);
 

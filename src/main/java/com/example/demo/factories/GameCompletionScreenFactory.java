@@ -16,6 +16,7 @@ public class GameCompletionScreenFactory {
     private final Button mainMenuButton;
     private final ImageView backgroundImage;
 
+    private final MainMenuButtonFactory mainMenuButtonFactory = new MainMenuButtonFactory();
     private static final String BACKGROUND_IMAGE_PATH = "/com/example/demo/images/victory.png";
 
     /**
@@ -40,7 +41,7 @@ public class GameCompletionScreenFactory {
         messageText.setY(screenHeight / 2 - 100);
 
         // Setup main menu button
-        mainMenuButton = new Button("Main Menu");
+        mainMenuButton = mainMenuButtonFactory.createButton();
         mainMenuButton.setLayoutX(screenWidth / 2 - 80);
         mainMenuButton.setLayoutY(screenHeight / 2 + 50);
     }
