@@ -71,7 +71,7 @@ public class LevelFour extends LevelParent {
     /**
      * The probability of spawning a heart power-up.
      */
-    private static final double HEART_SPAWN_PROBABILITY = 0.002;
+    private static final double HEART_SPAWN_PROBABILITY = 0.001;
 
     /**
      * The lifetime of a heart power-up in milliseconds.
@@ -112,6 +112,32 @@ public class LevelFour extends LevelParent {
      * The timeline for respawning the drone.
      */
     private Timeline droneRespawnTimer;
+
+
+    /**
+     * The upper boundary for heart spawning along the Y-axis.
+     * This ensures hearts spawn within the flyable area of the user plane.
+     */
+    private static final double Y_UPPER_BOUND = 0;
+
+    /**
+     * The lower boundary for heart spawning along the Y-axis.
+     * Hearts will not appear below this boundary, keeping them within the playable area.
+     */
+    private static final double Y_LOWER_BOUND = 650.0;
+
+    /**
+     * The left boundary for heart spawning along the X-axis.
+     * This ensures hearts spawn within the screen's visible area.
+     */
+    private static final double X_LEFT_BOUND = 0;
+
+    /**
+     * The right boundary for heart spawning along the X-axis.
+     * Hearts will not appear beyond this point, keeping them within the playable area.
+     */
+    private static final double X_RIGHT_BOUND = 1250.0;
+
 
     /**
      * Constructs a LevelFour instance with the specified screen dimensions and primary stage.
@@ -324,8 +350,11 @@ public class LevelFour extends LevelParent {
         }
 
         if (Math.random() < HEART_SPAWN_PROBABILITY) {
-            double xPosition = Math.random() * getScreenWidth();
-            double yPosition = Math.random() * this.screenHeight;
+            // Generate random X and Y positions within user plane's flyable bounds
+            double xPosition = X_LEFT_BOUND + Math.random() * (X_RIGHT_BOUND - X_LEFT_BOUND);
+            double yPosition = Y_UPPER_BOUND + Math.random() * (Y_LOWER_BOUND - Y_UPPER_BOUND);
+
+            // Create heart image
             Image heartImage = new Image(getClass().getResource("/com/example/demo/images/heart.png").toExternalForm());
             ImageView heart = new ImageView(heartImage);
             heart.setFitHeight(40);
@@ -333,11 +362,13 @@ public class LevelFour extends LevelParent {
             heart.setX(xPosition);
             heart.setY(yPosition);
 
+            // Track spawned hearts and add them to the root
             hearts.add(heart);
             heartSpawnTimes.add(System.currentTimeMillis());
             getRoot().getChildren().add(heart);
         }
     }
+
 
     /**
      * Checks for collisions between the player and heart power-ups.
@@ -353,7 +384,10 @@ public class LevelFour extends LevelParent {
 
             if (heart.getBoundsInParent().intersects(getUser().getBoundsInParent())) {
                 getUser().increaseHealth(1);
-                levelView.addHearts(1);
+                // Corrected: Update heart display in the UI
+                if (getLevelView() instanceof LevelViewLevelOne) {
+                    ((LevelViewLevelOne) getLevelView()).addHearts(1);
+                }
                 getRoot().getChildren().remove(heart);
                 heartIterator.remove();
                 timeIterator.remove();

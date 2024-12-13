@@ -81,20 +81,4 @@ public class LevelViewLevelFour extends LevelViewLevelOne {
     public void updateDroneHealth(int currentHealth) {
         droneHealthText.setText("Drone Health: " + currentHealth);
     }
-
-    /**
-     * Adds a heart to the heart display.
-     */
-    public void addHeart() {
-        heartDisplay.addHeart();
-    }
-
-    /**
-     * Updates the heart display with the specified number of hearts.
-     *
-     * @param currentHearts the current number of hearts to display
-     */
-    public void updateHearts(int currentHearts) {
-        heartDisplay.updateHearts(currentHearts);
-    }
 }

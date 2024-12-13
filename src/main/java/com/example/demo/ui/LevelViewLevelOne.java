@@ -13,12 +13,12 @@ public class LevelViewLevelOne {
 	private static final int WIN_IMAGE_X_POSITION = 355;
 	private static final int WIN_IMAGE_Y_POSITION = 175;
 
-	private static final double KILL_COUNT_MARGIN = 20; // Margin from the edge
+	private static final double KILL_COUNT_MARGIN = 20;
 	private static final int SCREEN_WIDTH = 1300;
 	private static final int SCREEN_HEIGHT = 750;
 
 	private final Pane root;
-	final HeartDisplay heartDisplay;
+	private final HeartDisplay heartDisplay;
 	private final Text killCountText;
 
 	/**
@@ -31,11 +31,10 @@ public class LevelViewLevelOne {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_DISPLAY_X_POSITION, HEART_DISPLAY_Y_POSITION, heartsToDisplay);
 
-
 		// Initialize kill count display
 		this.killCountText = new Text("Kill Count: 0");
 		killCountText.setStyle("-fx-font-size: 20px; -fx-fill: white; -fx-font-weight: bold;");
-		root.getChildren().add(killCountText); // Add kill count text to the root
+		root.getChildren().add(killCountText);
 
 		updateKillCountPosition();
 	}
@@ -44,28 +43,25 @@ public class LevelViewLevelOne {
 	 * Updates the position of the kill count text to ensure it stays within the screen.
 	 */
 	private void updateKillCountPosition() {
-		// First set the text to make sure the bounds are updated
-		killCountText.applyCss(); // Apply CSS to make sure we get an accurate size
+		killCountText.applyCss();
 		double textWidth = killCountText.getBoundsInLocal().getWidth();
+		double xPosition = SCREEN_WIDTH - textWidth - (4 * KILL_COUNT_MARGIN);
 
-		// Calculate the X position to ensure it stays within the screen
-		double xPosition = SCREEN_WIDTH - textWidth - (4 * KILL_COUNT_MARGIN); // Increased margin for safety
-
-		// Ensure the X position is not too close to the left edge
 		if (xPosition < KILL_COUNT_MARGIN) {
 			xPosition = KILL_COUNT_MARGIN;
 		}
 
-		// Set positions explicitly
 		killCountText.setX(xPosition);
-		killCountText.setY(KILL_COUNT_MARGIN); // A fixed margin from the top
+		killCountText.setY(KILL_COUNT_MARGIN);
 	}
 
 	/**
 	 * Displays the heart display on the screen.
 	 */
 	public void showHeartDisplay() {
-		root.getChildren().add(heartDisplay.getContainer());
+		if (!root.getChildren().contains(heartDisplay.getContainer())) {
+			root.getChildren().add(heartDisplay.getContainer());
+		}
 	}
 
 	/**
@@ -78,15 +74,6 @@ public class LevelViewLevelOne {
 		for (int i = 0; i < currentNumberOfHearts - heartsRemaining; i++) {
 			heartDisplay.removeHeart();
 		}
-	}
-
-	/**
-	 * Updates the heart display with the specified number of hearts.
-	 *
-	 * @param currentHearts the current number of hearts to display
-	 */
-	public void updateHearts(int currentHearts) {
-		heartDisplay.updateHearts(currentHearts);
 	}
 
 	/**
