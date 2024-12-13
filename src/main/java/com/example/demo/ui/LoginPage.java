@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -19,6 +21,8 @@ public class LoginPage {
     private final Stage primaryStage;
     private final LoginManager loginManager;
 
+
+    private static final String BACKGROUND_IMAGE = "/com/example/demo/images/loginBG.png";
     /**
      * Constructs a LoginPage with the specified primary stage.
      *
@@ -33,15 +37,22 @@ public class LoginPage {
      * Displays the login screen.
      */
     public void showLoginScreen() {
+        // Load background image
+        ImageView background = new ImageView(new Image(getClass().getResource(BACKGROUND_IMAGE).toExternalForm()));
+        background.setFitWidth(1300);
+        background.setFitHeight(750);
+        background.setPreserveRatio(false);
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
 
         Label usernameLabel = new Label("Username:");
+        usernameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: black; -fx-padding: 5px;");
         TextField usernameField = new TextField();
 
         Label passwordLabel = new Label("Password:");
+        passwordLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: black; -fx-padding: 5px;");
         PasswordField passwordField = new PasswordField();
 
         Label messageLabel = new Label();
@@ -79,6 +90,7 @@ public class LoginPage {
             MainMenuPage mainMenuPage = new MainMenuPage();
 
             StackPane root = new StackPane();
+            root.getChildren().add(background);
             Scene mainMenuScene = new Scene(root, 1300, 750);
             primaryStage.setScene(mainMenuScene);
 
@@ -96,7 +108,8 @@ public class LoginPage {
         grid.add(backButton, 0, 3);
         grid.add(messageLabel, 1, 3);
 
-        Scene scene = new Scene(grid, 1300, 750);
+        StackPane root = new StackPane(background, grid);
+        Scene scene = new Scene(root, 1300, 750);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
