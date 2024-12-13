@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -76,7 +77,14 @@ public class LoginPage {
         Button backButton = new Button("Back to Main Menu");
         backButton.setOnAction(e -> {
             MainMenuPage mainMenuPage = new MainMenuPage();
+
+            StackPane root = new StackPane();
+            Scene mainMenuScene = new Scene(root, 1300, 750);
+            primaryStage.setScene(mainMenuScene);
+
             mainMenuPage.start(primaryStage);
+            primaryStage.sizeToScene();
+            primaryStage.show();
         });
 
         grid.add(usernameLabel, 0, 0);
