@@ -171,10 +171,10 @@ public class LevelFour extends LevelParent {
 
         Text introText = new Text(
                 "KILL 20 ENEMY PLANES AND THE DRONE TO WIN LEVEL FOUR!\n\n" +
-                        "WARNING: A NEW DRONE WILL APPEAR 10 SECONDS AFTER YOU KILL THE FIRST DRONE, \nIF YOU HAVEN'T REACHED THE KILL TARGET!\n\n" +
+                        "WARNING: \nA NEW DRONE WILL APPEAR 10 SECONDS AFTER YOU KILL THE FIRST DRONE, IF YOU \nHAVEN'T REACHED THE KILL TARGET!\n\n" +
                         "HINT: COLLECT HEARTS THAT APPEAR ON THE SCREEN TO GAIN EXTRA LIVES!");
         introText.setFill(Color.WHITE);
-        introText.setFont(Font.font("Arial", 40));
+        introText.setFont(Font.font("Arial", 30));
         introOverlay.getChildren().add(introText);
 
         getRoot().getChildren().add(introOverlay);

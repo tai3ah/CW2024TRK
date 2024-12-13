@@ -72,15 +72,17 @@ public class LevelTwo extends LevelParent {
 		introOverlay.setPrefSize(getScreenWidth(), getScreenHeight());
 		introOverlay.setStyle("-fx-background-color: black;");
 
-		Text introText = new Text("SHOOT THE BOSS TO REDUCE ITS HEALTH TO ZERO AND WIN LEVEL TWO!");
+		Text introText = new Text("\tSHOOT THE BOSS TO REDUCE ITS HEALTH TO ZERO AND WIN LEVEL TWO!\n\n" +
+				"WARNING!!! BOSS SHIELD RANDOMLY APPEARS TO PROTECT BOSS FROM ANY ATTACKS!");
+
 		introText.setFill(Color.WHITE);
-		introText.setFont(Font.font("Arial", 40));
+		introText.setFont(Font.font("Arial", 30));
 		introOverlay.getChildren().add(introText);
 
 		getRoot().getChildren().add(introOverlay);
 
 		Timeline timeline = new Timeline(
-				new KeyFrame(Duration.seconds(5), e -> {
+				new KeyFrame(Duration.seconds(4), e -> {
 					getRoot().getChildren().remove(introOverlay);
 					super.startGame();
 				})
