@@ -9,7 +9,7 @@ public class UserPlane extends FighterPlane {
 
 	// Static constants for the plane's attributes
 	private static final String IMAGE_NAME = "userplane.png";
-	private static final double Y_UPPER_BOUND = 0; //-40;
+	private static final double Y_UPPER_BOUND = 0;
 	private static final double Y_LOWER_BOUND = 650.0;
 	private static final double X_LEFT_BOUND = 0;
 	private static final double X_RIGHT_BOUND = 1250.0;
