@@ -4,6 +4,7 @@ import com.example.demo.actors.*;
 import com.example.demo.factories.DroneFactory;
 import com.example.demo.factories.EnemyPlaneFactory;
 import com.example.demo.factories.GameCompletionScreenFactory;
+import com.example.demo.factories.LevelEndScreenFactory;
 import com.example.demo.managers.SoundManager;
 import com.example.demo.ui.LevelViewLevelFour;
 import com.example.demo.ui.LevelViewLevelOne;
@@ -28,10 +29,8 @@ import java.util.List;
  * It handles the initialization, gameplay, and transition to the next level.
  */
 public class LevelFour extends LevelParent {
-    /**
-     * Indicates if the game has been completed to prevent duplicate actions.
-     */
-    private boolean gameCompleted = false;
+
+    private AnimationTimer gameLoop;
 
     /**
      * The background image for the level.
@@ -211,19 +210,55 @@ public class LevelFour extends LevelParent {
 
     /**
      * Checks if the game is over by evaluating the player's and drone's status.
+     * If the user is destroyed, the level end screen is shown.
+     * If the kill target is reached, the game completion screen is displayed.
      */
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
+            // User lost, show level end screen
+            gameLoop.stop();
             loseGame();
         } else if (drone != null && drone.isDestroyed()) {
             if (userHasReachedKillTarget()) {
-                winGame();
+                gameLoop.stop();
+                // User won, show game completion screen directly
+                SoundManager.getInstance().stopBackgroundSound();
+                SoundManager.getInstance().playWinSound();
+
+                GameCompletionScreenFactory completionScreen = new GameCompletionScreenFactory(
+                        getRoot(), getScreenWidth(), getScreenHeight());
+                completionScreen.showGameCompletionScreen(() -> {
+                    MainMenuPage mainMenuPage = new MainMenuPage();
+
+                    StackPane root = new StackPane();
+                    Scene mainMenuScene = new Scene(root, 1300, 750);
+                    getPrimaryStage().setScene(mainMenuScene);
+
+                    mainMenuPage.start(getPrimaryStage());
+                    getPrimaryStage().sizeToScene();
+                    getPrimaryStage().show();
+                });
+                stopAllTimers();
             } else {
-                startDroneRespawnTimer(); // Start timer if drone is destroyed but kill target not reached
+                // Drone is destroyed, but kill target not reached, start respawn timer
+                startDroneRespawnTimer();
             }
         }
     }
+
+    /**
+     * Stops all running timers to prevent glitches.
+     */
+    private void stopAllTimers() {
+        if (getTimeline() != null && getTimeline().getStatus() == Animation.Status.RUNNING) {
+            getTimeline().stop();
+        }
+        if (droneRespawnTimer != null && droneRespawnTimer.getStatus() == Animation.Status.RUNNING) {
+            droneRespawnTimer.stop();
+        }
+    }
+
 
     /**
      * Starts the timer for respawning the drone.
@@ -330,16 +365,17 @@ public class LevelFour extends LevelParent {
      * Starts the main game loop, which checks for game over conditions, spawns enemies, and updates the UI.
      */
     private void startGameLoop() {
-        AnimationTimer gameLoop = new AnimationTimer() {
+        gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                checkIfGameOver();
                 spawnEnemyUnits();
                 updateUI();
+                checkIfGameOver();
             }
         };
         gameLoop.start();
     }
+
 
     /**
      * Spawns heart power-ups at random positions on the screen based on spawn probability.
