@@ -39,8 +39,20 @@ public class MainMenuPage {
         // Create Login and Play button
         Button loginButton = new Button("Login and Play");
         loginButton.setOnAction(event -> {
+            //LoginPage loginPage = new LoginPage(primaryStage);
+           // loginPage.showLoginScreen();
+
             LoginPage loginPage = new LoginPage(primaryStage);
+
+            StackPane root = new StackPane();
+            Scene loginScene = new Scene(root, 1300, 750);
+
+            primaryStage.setScene(loginScene);
             loginPage.showLoginScreen();
+
+            primaryStage.sizeToScene();
+            primaryStage.show();
+
         });
 
         // Create Quit button
