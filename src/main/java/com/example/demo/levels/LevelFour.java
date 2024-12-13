@@ -4,6 +4,7 @@ import com.example.demo.actors.*;
 import com.example.demo.factories.DroneFactory;
 import com.example.demo.factories.EnemyPlaneFactory;
 import com.example.demo.factories.GameCompletionScreenFactory;
+import com.example.demo.managers.SoundManager;
 import com.example.demo.ui.LevelViewLevelFour;
 import com.example.demo.ui.LevelViewLevelOne;
 import com.example.demo.ui.MainMenuPage;
@@ -27,6 +28,10 @@ import java.util.List;
  * It handles the initialization, gameplay, and transition to the next level.
  */
 public class LevelFour extends LevelParent {
+    /**
+     * Indicates if the game has been completed to prevent duplicate actions.
+     */
+    private boolean gameCompleted = false;
 
     /**
      * The background image for the level.
@@ -384,5 +389,4 @@ public class LevelFour extends LevelParent {
     private boolean userHasReachedKillTarget() {
         return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
     }
-
 }

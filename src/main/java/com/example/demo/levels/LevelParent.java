@@ -12,6 +12,7 @@ import com.example.demo.managers.LoginManager;
 import com.example.demo.ui.LevelViewLevelOne;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -165,10 +166,10 @@ public abstract class LevelParent {
 	 * Constructs a LevelParent instance with the specified parameters.
 	 *
 	 * @param backgroundImageName the name of the background image
-	 * @param screenHeight the height of the screen
-	 * @param screenWidth the width of the screen
+	 * @param screenHeight        the height of the screen
+	 * @param screenWidth         the width of the screen
 	 * @param playerInitialHealth the initial health of the player
-	 * @param primaryStage the primary stage for the application
+	 * @param primaryStage        the primary stage for the application
 	 */
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage primaryStage) {
 		this.endScreenFactory = new LevelEndScreenFactory();
@@ -397,14 +398,24 @@ public abstract class LevelParent {
 		soundManager.stopBackgroundSound();
 		soundManager.playWinSound();
 
+		getTimeline().stop();
+
 		// Save progress
 		int currentLevelNumber = getLevelNumber();
 		if (currentLevelNumber < 4) { // Ensure only levels 1-3 save progress
 			saveProgress(currentLevelNumber + 1); // Unlock the next level
 		}
 
+		//endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
+		//endScreenFactory.showWinLevelScreen(this::restartLevel, this::goToNextLevel);
+		// Initialize the level end screen
 		endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
-		endScreenFactory.showWinLevelScreen(this::restartLevel, this::goToNextLevel);
+		endScreenFactory.showWinLevelScreen(
+				this::restartLevel,      // Action for "Play Again"
+				this::goToNextLevel,     // Action for "Next Level"
+				getPrimaryStage()        // Pass the primary stage for "Main Menu"
+		);
+
 	}
 
 	/**
@@ -429,8 +440,13 @@ public abstract class LevelParent {
 		stopGame();
 		soundManager.stopBackgroundSound();
 		soundManager.playLoseSound();
+		// Initialize the level end screen
 		endScreenFactory.initialize(getRoot(), getScreenWidth(), getScreenHeight());
-		endScreenFactory.showLoseLevelScreen(this::restartLevel);
+		endScreenFactory.showLoseLevelScreen(
+				this::restartLevel,     // Action for "Play Again"
+				getPrimaryStage()       // Pass the primary stage for "Main Menu"
+		);
+
 	}
 
 	/**
@@ -494,14 +510,17 @@ public abstract class LevelParent {
 	}
 
 	/**
-	 * Adds an enemy unit to the level.
+	 * Adds an enemy unit to the level if it is not already present.
 	 *
 	 * @param enemy the enemy unit to add
 	 */
 	protected void addEnemyUnit(GameEntity enemy) {
-		enemyUnits.add(enemy);
-		root.getChildren().add(enemy);
+		if (!root.getChildren().contains(enemy)) {
+			enemyUnits.add(enemy);
+			root.getChildren().add(enemy);
+		}
 	}
+
 
 	/**
 	 * Gets the maximum Y position for enemies.
@@ -581,4 +600,4 @@ public abstract class LevelParent {
 			loginManager.saveProgress(loggedInUser, unlockedLevel);
 		}
 	}
-	}
+}
